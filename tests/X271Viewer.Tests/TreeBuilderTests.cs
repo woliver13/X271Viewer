@@ -14,6 +14,13 @@ public class TreeBuilderTests
         return parser.ParseFile(path);
     }
 
+    private static X271Document LoadSubscriber271()
+    {
+        var path   = Path.Combine(FixtureDir, "subscriber271.edi");
+        var parser = new X271DocumentParser();
+        return parser.ParseFile(path);
+    }
+
     // ── Cycle 1 ──────────────────────────────────────────────────────────────
 
     [Fact]
@@ -113,5 +120,37 @@ public class TreeBuilderTests
         // Service type "1" group should contain 2 individual EB nodes
         var group1 = ebGroups.Single(n => n.Label.Contains(" 1"));
         Assert.Equal(2, group1.Children.Count);
+    }
+
+    // ── Cycle 7 — subscriber-as-patient (3-level hierarchy) ──────────────────
+
+    [Fact]
+    public void TreeBuilder_subscriber_as_patient_has_no_dependent_node()
+    {
+        var doc        = LoadSubscriber271();
+        var root       = X271TreeBuilder.Build(doc);
+        var st         = root.Children[0].Children[0];
+        var subscriber = st.Children
+            .Single(n => n.Label.Contains("Information Source")).Children
+            .Single(n => n.Label.Contains("Information Receiver")).Children
+            .Single(n => n.Label.Contains("Subscriber"));
+
+        Assert.DoesNotContain(subscriber.Children, n => n.Label.Contains("Dependent"));
+    }
+
+    [Fact]
+    public void TreeBuilder_subscriber_as_patient_EB_groups_appear_under_subscriber()
+    {
+        var doc        = LoadSubscriber271();
+        var root       = X271TreeBuilder.Build(doc);
+        var st         = root.Children[0].Children[0];
+        var subscriber = st.Children
+            .Single(n => n.Label.Contains("Information Source")).Children
+            .Single(n => n.Label.Contains("Information Receiver")).Children
+            .Single(n => n.Label.Contains("Subscriber"));
+
+        // 4 EB segments: 1,C,G,B → 4 distinct service-type groups directly under subscriber
+        var ebGroups = subscriber.Children.Where(n => n.Label.StartsWith("EB")).ToList();
+        Assert.Equal(4, ebGroups.Count);
     }
 }
