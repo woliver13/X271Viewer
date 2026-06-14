@@ -1,0 +1,9 @@
+{
+  "isValid": false,
+  "errors": [
+    {
+      "code": "MissingRequiredSegment",
+      "message": "Required segment \u0027IEA\u0027 is missing from the interchange."
+    }
+  ]
+}

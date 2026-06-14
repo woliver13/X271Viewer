@@ -63,3 +63,4 @@ desktop.ini
 # Claude Code — local overrides only; settings.json is checked in
 .claude/**
 !.claude/settings.json
+publish/

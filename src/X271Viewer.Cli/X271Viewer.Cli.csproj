@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\X271Viewer.Application\X271Viewer.Application.csproj" />
+    <ProjectReference Include="..\X271Viewer.Domain\X271Viewer.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

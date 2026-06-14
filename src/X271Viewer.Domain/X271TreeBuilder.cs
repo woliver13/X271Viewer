@@ -232,11 +232,13 @@ public static class X271TreeBuilder
         _    => $"HL — Level {levelCode} ({hlSeg[1]})",
     };
 
-    private static string Raw(X12Segment seg, X12Delimiters d)
+    public static string SegmentToRaw(X12Segment seg, X12Delimiters d)
     {
         var elements = string.Join(d.ElementSeparator, seg.Elements);
         return $"{Id(seg)}{d.ElementSeparator}{elements}{d.SegmentTerminator}";
     }
+
+    private static string Raw(X12Segment seg, X12Delimiters d) => SegmentToRaw(seg, d);
 
     // SegmentId may have leading/trailing whitespace when EDI lines end with \n after ~.
     private static string Id(X12Segment seg) => seg.SegmentId.Trim();
