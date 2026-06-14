@@ -60,5 +60,6 @@ desktop.ini
 *.swp
 ~$*
 
-# Claude Code
-.claude/
+# Claude Code — local overrides only; settings.json is checked in
+.claude/**
+!.claude/settings.json

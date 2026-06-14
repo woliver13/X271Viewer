@@ -10,6 +10,7 @@
     <ProjectReference Include="..\X271Viewer.Domain\X271Viewer.Domain.csproj" />
     <ProjectReference Include="..\..\..\X12Net\src\X12Net.Domain\X12Net.Domain.csproj" />
     <ProjectReference Include="..\..\..\X12Net\src\X12Net.Infrastructure\X12Net.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\X12Net\src\X12Net.Application\X12Net.Application.csproj" />
   </ItemGroup>
 
 </Project>

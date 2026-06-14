@@ -1,5 +1,7 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.Win32;
 using X271Viewer.Application;
 using X271Viewer.Domain;
@@ -8,11 +10,13 @@ namespace X271Viewer.Wpf;
 
 public partial class MainWindow : Window
 {
-    private readonly X271DocumentParser _parser = new();
+    private readonly X271DocumentParser    _parser    = new();
+    private readonly X271ValidationService _validator = new();
 
     public MainWindow()
     {
         InitializeComponent();
+        Title = AppTitleBuilder.Build(AppTitleBuilder.GetFileVersion());
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
@@ -28,13 +32,28 @@ public partial class MainWindow : Window
 
         try
         {
-            var doc  = _parser.ParseFile(dlg.FileName);
-            var root = X271TreeBuilder.Build(doc);
+            var content = File.ReadAllText(dlg.FileName);
+            var doc     = _parser.ParseContent(content);
+            var root    = X271TreeBuilder.Build(doc);
+
+            var validationResult = _validator.Validate(content);
+            _validator.AnnotateTree(root, validationResult);
+
             PopulateTree(root);
             RawSegmentPane.Text = doc.IsaRawText;
-            InterpretationPane.Text = "Select a node to see its plain-English interpretation.";
-            InterpretationPane.FontStyle = FontStyles.Italic;
-            InterpretationPane.Foreground = System.Windows.Media.Brushes.Gray;
+
+            if (validationResult.IsValid)
+            {
+                InterpretationPane.Text      = "✓ No validation errors.";
+                InterpretationPane.FontStyle  = FontStyles.Normal;
+                InterpretationPane.Foreground = Brushes.DarkGreen;
+            }
+            else
+            {
+                InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
+                InterpretationPane.FontStyle  = FontStyles.Italic;
+                InterpretationPane.Foreground = Brushes.Gray;
+            }
         }
         catch (X271ParseException ex)
         {
@@ -52,10 +71,27 @@ public partial class MainWindow : Window
     {
         var item = new TreeViewItem
         {
-            Header     = node.Label,
             Tag        = node,
             IsExpanded = !node.IsCollapsedByDefault,
         };
+
+        if (node.HasValidationErrors)
+        {
+            var stack = new StackPanel { Orientation = Orientation.Horizontal };
+            stack.Children.Add(new TextBlock
+            {
+                Text       = "⚠ ",
+                Foreground = Brushes.Red,
+                FontWeight = FontWeights.Bold,
+            });
+            stack.Children.Add(new TextBlock { Text = node.Label });
+            item.Header = stack;
+        }
+        else
+        {
+            item.Header = node.Label;
+        }
+
         foreach (var child in node.Children)
             item.Items.Add(BuildTreeItem(child));
         return item;
@@ -64,9 +100,22 @@ public partial class MainWindow : Window
     private void TreePane_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
         if (e.NewValue is not TreeViewItem { Tag: X271Node node }) return;
+
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
-        InterpretationPane.Text = X271InterpretationEngine.Interpret(node);
-        InterpretationPane.FontStyle = FontStyles.Normal;
-        InterpretationPane.Foreground = System.Windows.Media.Brushes.Black;
+
+        if (node.HasValidationErrors)
+        {
+            var errorSummary = string.Join(Environment.NewLine,
+                node.ValidationErrors.Select((msg, i) => $"• {msg}"));
+            InterpretationPane.Text      = $"Validation errors:{Environment.NewLine}{errorSummary}";
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.Red;
+        }
+        else
+        {
+            InterpretationPane.Text      = X271InterpretationEngine.Interpret(node);
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.Black;
+        }
     }
 }
