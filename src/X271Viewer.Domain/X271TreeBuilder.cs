@@ -177,27 +177,44 @@ public static class X271TreeBuilder
     private static IReadOnlyList<X271Node> BuildEbGroups(
         int hlIdx, IReadOnlyList<X12Segment> segs, X12Delimiters d)
     {
-        // Collect EB segments owned by this HL (between hlIdx+1 and the next HL/SE/GE)
-        var ebSegs = new List<X12Segment>();
+        // Collect (EB segment index, EB segment) pairs owned by this HL
+        var ebEntries = new List<(int idx, X12Segment seg)>();
         for (int j = hlIdx + 1; j < segs.Count; j++)
         {
             var sid = Id(segs[j]);
             if (sid == "HL" || sid == "SE" || sid == "GE") break;
-            if (sid == "EB") ebSegs.Add(segs[j]);
+            if (sid == "EB") ebEntries.Add((j, segs[j]));
         }
 
-        if (ebSegs.Count == 0) return [];
+        if (ebEntries.Count == 0) return [];
 
-        // Group by EB01 (Service Type code)
-        var grouped = ebSegs
-            .GroupBy(s => s[1])
+        // Build leaf nodes: each EB + its companion segments up to the next EB/HL/SE/GE
+        var leaves = ebEntries.Select((entry, i) =>
+        {
+            var (ebIdx, ebSeg) = entry;
+            var raw = new List<string> { Raw(ebSeg, d) };
+
+            int limit = i + 1 < ebEntries.Count
+                ? ebEntries[i + 1].idx
+                : segs.Count;
+
+            for (int j = ebIdx + 1; j < limit && j < segs.Count; j++)
+            {
+                var sid = Id(segs[j]);
+                if (sid == "HL" || sid == "SE" || sid == "GE") break;
+                if (sid != "EB") raw.Add(Raw(segs[j], d));
+            }
+
+            return new X271Node($"EB {ebSeg[1]}/{ebSeg[2]}", raw, []);
+        }).ToList();
+
+        // Group leaves by EB01 (Service Type code)
+        var grouped = leaves
+            .GroupBy(n => n.RawSegments[0].Split('*')[1])
             .Select(g =>
             {
-                var groupLabel    = $"EB — Service Type {g.Key}";
-                var individualEbs = g
-                    .Select(eb => new X271Node($"EB {eb[1]}/{eb[2]}", [Raw(eb, d)], []))
-                    .ToList<X271Node>();
-                return new X271Node(groupLabel, [], individualEbs);
+                var groupLabel = $"EB — Service Type {g.Key}";
+                return new X271Node(groupLabel, [], g.ToList<X271Node>());
             })
             .ToList<X271Node>();
 

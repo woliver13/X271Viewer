@@ -1,4 +1,14 @@
 {
+  "HSD01": {
+    "VS": "Visits",
+    "DY": "Days",
+    "MN": "Minutes",
+    "HH": "Hours",
+    "WK": "Weeks",
+    "MO": "Months",
+    "YR": "Years",
+    "UN": "Units"
+  },
   "EB01": {
     "1":  "Active Coverage",
     "2":  "Active — Full Risk Capitation",

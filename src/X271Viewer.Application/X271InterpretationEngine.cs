@@ -17,15 +17,13 @@ public static class X271InterpretationEngine
 
             switch (id)
             {
-                case "EB":
-                    AppendEb(sb, elements);
-                    break;
-                case "NM1":
-                    AppendNm1(sb, elements);
-                    break;
-                case "DMG":
-                    AppendDmg(sb, elements);
-                    break;
+                case "EB":  AppendEb(sb, elements);  break;
+                case "HSD": AppendHsd(sb, elements); break;
+                case "MSG": AppendMsg(sb, elements); break;
+                case "DTP": AppendDtp(sb, elements); break;
+                case "REF": AppendRef(sb, elements); break;
+                case "NM1": AppendNm1(sb, elements); break;
+                case "DMG": AppendDmg(sb, elements); break;
             }
         }
 
@@ -73,6 +71,43 @@ public static class X271InterpretationEngine
             sb.AppendLine($"  Time Period:    {timePeriodLabel}");
 
         sb.AppendLine();
+    }
+
+    private static void AppendHsd(StringBuilder sb, string[] e)
+    {
+        var qualifier   = GetElement(e, 1);
+        var quantity    = GetElement(e, 2);
+        var timePeriod  = GetElement(e, 5);
+
+        var unitLabel   = X12CodeTable.Resolve("HSD01", qualifier);
+        var periodLabel = string.IsNullOrEmpty(timePeriod) ? "" : X12CodeTable.Resolve("EB06", timePeriod);
+
+        var detail = $"{quantity} {unitLabel}";
+        if (!string.IsNullOrEmpty(periodLabel))
+            detail += $" per {periodLabel}";
+
+        sb.AppendLine($"  Delivery: {detail}");
+    }
+
+    private static void AppendMsg(StringBuilder sb, string[] e)
+    {
+        var text = GetElement(e, 1);
+        if (!string.IsNullOrEmpty(text))
+            sb.AppendLine($"  Note: {text}");
+    }
+
+    private static void AppendDtp(StringBuilder sb, string[] e)
+    {
+        var qualifier = GetElement(e, 1);
+        var value     = GetElement(e, 3);
+        sb.AppendLine($"  Date/Period: {qualifier} {value}".TrimEnd());
+    }
+
+    private static void AppendRef(StringBuilder sb, string[] e)
+    {
+        var qualifier = GetElement(e, 1);
+        var value     = GetElement(e, 2);
+        sb.AppendLine($"  Reference: {qualifier} {value}".TrimEnd());
     }
 
     private static void AppendNm1(StringBuilder sb, string[] e)
