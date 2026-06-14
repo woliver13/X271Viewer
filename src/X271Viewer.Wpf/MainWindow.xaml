@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:X271Viewer.Wpf"
         mc:Ignorable="d"
         Title="X271 Viewer" Height="600" Width="1000">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open…" Click="Open_Click" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Open…"       Click="Open_Click"   InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Export JSON…" Command="{x:Static local:MainWindow.ExportCommand}"/>
             </MenuItem>
         </Menu>
 

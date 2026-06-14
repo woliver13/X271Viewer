@@ -1,0 +1,208 @@
+{
+  "IsaRawText": "ISA*00*          *00*          *ZZ*BCBSIL         *ZZ*SUBMITTER      *260613*0900*^*00501*000000271*0*P*:~",
+  "Root": {
+    "Label": "ISA \u2014 Interchange 000000271",
+    "RawSegments": [
+      "ISA*00*          *00*          *ZZ*BCBSIL         *ZZ*SUBMITTER      *260613*0900*^*00501*000000271*0*P*:~"
+    ],
+    "Interpretation": "[ISA \u2014 Interchange 000000271] \u2014 no interpretation available",
+    "ValidationErrors": [],
+    "Children": [
+      {
+        "Label": "GS \u2014 Functional Group HB (005010X279A1)",
+        "RawSegments": [
+          "GS*HB*BCBSIL*SUBMITTER*20260613*0900*271*X*005010X279A1~"
+        ],
+        "Interpretation": "[GS \u2014 Functional Group HB (005010X279A1)] \u2014 no interpretation available",
+        "ValidationErrors": [],
+        "Children": [
+          {
+            "Label": "ST \u2014 Transaction 271 (0001)",
+            "RawSegments": [
+              "ST*271*0001~",
+              "BHT*0022*11*REF10001*20260613*0900~"
+            ],
+            "Interpretation": "[ST \u2014 Transaction 271 (0001)] \u2014 no interpretation available",
+            "ValidationErrors": [],
+            "Children": [
+              {
+                "Label": "HL \u2014 Information Source (1)",
+                "RawSegments": [
+                  "HL*1**20*1~",
+                  "NM1*PR*2*BLUE CROSS BLUE SHIELD OF IL*****PI*00111~"
+                ],
+                "Interpretation": "Payer: BLUE CROSS BLUE SHIELD OF IL\r\n  Member ID: 00111",
+                "ValidationErrors": [],
+                "Children": [
+                  {
+                    "Label": "HL \u2014 Information Receiver (2)",
+                    "RawSegments": [
+                      "HL*2*1*21*1~",
+                      "NM1*1P*2*ACME MEDICAL GROUP*****XX*1234567890~"
+                    ],
+                    "Interpretation": "Provider: ACME MEDICAL GROUP\r\n  Member ID: 1234567890",
+                    "ValidationErrors": [],
+                    "Children": [
+                      {
+                        "Label": "HL \u2014 Subscriber (3)",
+                        "RawSegments": [
+                          "HL*3*2*22*1~",
+                          "NM1*IL*1*DOE*JANE*M***MI*XYZ987654321~",
+                          "DMG*D8*19850315*F~"
+                        ],
+                        "Interpretation": "Subscriber: JANE M DOE\r\n  Member ID: XYZ987654321\r\n  Date of Birth: March 15, 1985\r\n  Gender: Female",
+                        "ValidationErrors": [],
+                        "Children": [
+                          {
+                            "Label": "HL \u2014 Dependent (4)",
+                            "RawSegments": [
+                              "HL*4*3*23*0~",
+                              "NM1*QC*1*DOE*EMMA****~",
+                              "DMG*D8*20140902*F~"
+                            ],
+                            "Interpretation": "Dependent: EMMA DOE\r\n  Date of Birth: September 2, 2014\r\n  Gender: Female",
+                            "ValidationErrors": [],
+                            "Children": [
+                              {
+                                "Label": "EB \u2014 Service Type 1",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type 1] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB 1/FAM",
+                                    "RawSegments": [
+                                      "EB*1*FAM*30*MC**1~"
+                                    ],
+                                    "Interpretation": "Benefit: Active Coverage\r\n  Service Type:   Health Benefit Plan Coverage\r\n  Coverage Level: Family\r\n  Insurance Type: Medicaid\r\n  Time Period:    1 (unrecognized code)",
+                                    "ValidationErrors": [
+                                      "EB06 Time Period Qualifier \u00271\u0027 is not a valid code set 615 value.",
+                                      "EB06 Time Period Qualifier is present but none of EB07, EB08, or EB10 contain a value."
+                                    ],
+                                    "Children": []
+                                  },
+                                  {
+                                    "Label": "EB 1/IND",
+                                    "RawSegments": [
+                                      "EB*1*IND*47*MC**1~"
+                                    ],
+                                    "Interpretation": "Benefit: Active Coverage\r\n  Service Type:   Hospital\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Time Period:    1 (unrecognized code)",
+                                    "ValidationErrors": [
+                                      "EB06 Time Period Qualifier \u00271\u0027 is not a valid code set 615 value.",
+                                      "EB06 Time Period Qualifier is present but none of EB07, EB08, or EB10 contain a value."
+                                    ],
+                                    "Children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "Label": "EB \u2014 Service Type C",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type C] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB C/IND",
+                                    "RawSegments": [
+                                      "EB*C*IND*30*MC*2000~"
+                                    ],
+                                    "Interpretation": "Benefit: Deductible\r\n  Service Type:   Health Benefit Plan Coverage\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Amount:         $2,000.00",
+                                    "ValidationErrors": [],
+                                    "Children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "Label": "EB \u2014 Service Type G",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type G] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB G/IND",
+                                    "RawSegments": [
+                                      "EB*G*IND*30*MC*450~"
+                                    ],
+                                    "Interpretation": "Benefit: Out-of-Pocket (Stop Loss)\r\n  Service Type:   Health Benefit Plan Coverage\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Amount:         $450.00",
+                                    "ValidationErrors": [],
+                                    "Children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "Label": "EB \u2014 Service Type A",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type A] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB A/IND",
+                                    "RawSegments": [
+                                      "EB*A*IND*1*MC**1~"
+                                    ],
+                                    "Interpretation": "Benefit: Co-Insurance\r\n  Service Type:   Medical Care\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Time Period:    1 (unrecognized code)",
+                                    "ValidationErrors": [
+                                      "EB06 Time Period Qualifier \u00271\u0027 is not a valid code set 615 value.",
+                                      "EB06 Time Period Qualifier is present but none of EB07, EB08, or EB10 contain a value."
+                                    ],
+                                    "Children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "Label": "EB \u2014 Service Type R",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type R] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB R/IND",
+                                    "RawSegments": [
+                                      "EB*R*IND*30*MC**1**27~"
+                                    ],
+                                    "Interpretation": "Benefit: Other or Additional Payor\r\n  Service Type:   Health Benefit Plan Coverage\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Time Period:    1 (unrecognized code)",
+                                    "ValidationErrors": [
+                                      "EB06 Time Period Qualifier \u00271\u0027 is not a valid code set 615 value."
+                                    ],
+                                    "Children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "Label": "EB \u2014 Service Type B",
+                                "RawSegments": [],
+                                "Interpretation": "[EB \u2014 Service Type B] \u2014 no interpretation available",
+                                "ValidationErrors": [],
+                                "Children": [
+                                  {
+                                    "Label": "EB B/IND",
+                                    "RawSegments": [
+                                      "EB*B*IND*47*MC*1500~"
+                                    ],
+                                    "Interpretation": "Benefit: Co-Payment\r\n  Service Type:   Hospital\r\n  Coverage Level: Individual\r\n  Insurance Type: Medicaid\r\n  Amount:         $1,500.00",
+                                    "ValidationErrors": [],
+                                    "Children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ValidationResults": [
+    {
+      "Code": "MissingRequiredSegment",
+      "Message": "Required segment \u0027IEA\u0027 is missing from the interchange."
+    }
+  ]
+}
