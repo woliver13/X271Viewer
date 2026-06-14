@@ -86,7 +86,10 @@ public class TreeBuilderTests
 
         // Info Receiver → Subscriber (HL01=3, level 22)
         var subscriber = infoReceiver.Children.Single(n => n.Label.Contains("Subscriber"));
-        Assert.NotNull(subscriber);
+
+        // Subscriber → Dependent (HL01=4, level 23)
+        var dependent = subscriber.Children.Single(n => n.Label.Contains("Dependent"));
+        Assert.NotNull(dependent);
     }
 
     // ── Cycle 6 ──────────────────────────────────────────────────────────────
@@ -94,16 +97,17 @@ public class TreeBuilderTests
     [Fact]
     public void TreeBuilder_EB_segments_grouped_by_service_type()
     {
-        var doc        = LoadFull271();
-        var root       = X271TreeBuilder.Build(doc);
-        var st         = root.Children[0].Children[0];
-        var subscriber = st.Children
+        var doc       = LoadFull271();
+        var root      = X271TreeBuilder.Build(doc);
+        var st        = root.Children[0].Children[0];
+        var dependent = st.Children
             .Single(n => n.Label.Contains("Information Source")).Children
             .Single(n => n.Label.Contains("Information Receiver")).Children
-            .Single(n => n.Label.Contains("Subscriber"));
+            .Single(n => n.Label.Contains("Subscriber")).Children
+            .Single(n => n.Label.Contains("Dependent"));
 
         // 7 EB segments with EB01 values: 1,C,G,A,R,1,B → 6 distinct service-type groups
-        var ebGroups = subscriber.Children.Where(n => n.Label.StartsWith("EB")).ToList();
+        var ebGroups = dependent.Children.Where(n => n.Label.StartsWith("EB")).ToList();
         Assert.Equal(6, ebGroups.Count);
 
         // Service type "1" group should contain 2 individual EB nodes
