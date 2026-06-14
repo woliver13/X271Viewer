@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using X271Viewer.Application;
 using X271Viewer.Domain;
 
 namespace X271Viewer.Wpf;
@@ -31,6 +32,9 @@ public partial class MainWindow : Window
             var root = X271TreeBuilder.Build(doc);
             PopulateTree(root);
             RawSegmentPane.Text = doc.IsaRawText;
+            InterpretationPane.Text = "Select a node to see its plain-English interpretation.";
+            InterpretationPane.FontStyle = FontStyles.Italic;
+            InterpretationPane.Foreground = System.Windows.Media.Brushes.Gray;
         }
         catch (X271ParseException ex)
         {
@@ -61,5 +65,8 @@ public partial class MainWindow : Window
     {
         if (e.NewValue is not TreeViewItem { Tag: X271Node node }) return;
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
+        InterpretationPane.Text = X271InterpretationEngine.Interpret(node);
+        InterpretationPane.FontStyle = FontStyles.Normal;
+        InterpretationPane.Foreground = System.Windows.Media.Brushes.Black;
     }
 }
