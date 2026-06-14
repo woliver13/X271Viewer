@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 using X271Viewer.Domain;
 
@@ -26,12 +27,39 @@ public partial class MainWindow : Window
 
         try
         {
-            var doc = _parser.ParseFile(dlg.FileName);
+            var doc  = _parser.ParseFile(dlg.FileName);
+            var root = X271TreeBuilder.Build(doc);
+            PopulateTree(root);
             RawSegmentPane.Text = doc.IsaRawText;
         }
         catch (X271ParseException ex)
         {
             MessageBox.Show(ex.Message, "Cannot Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+    }
+
+    private void PopulateTree(X271Node root)
+    {
+        TreePane.Items.Clear();
+        TreePane.Items.Add(BuildTreeItem(root));
+    }
+
+    private static TreeViewItem BuildTreeItem(X271Node node)
+    {
+        var item = new TreeViewItem
+        {
+            Header     = node.Label,
+            Tag        = node,
+            IsExpanded = !node.IsCollapsedByDefault,
+        };
+        foreach (var child in node.Children)
+            item.Items.Add(BuildTreeItem(child));
+        return item;
+    }
+
+    private void TreePane_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (e.NewValue is not TreeViewItem { Tag: X271Node node }) return;
+        RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
     }
 }

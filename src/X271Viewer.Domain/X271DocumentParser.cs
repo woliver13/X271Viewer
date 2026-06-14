@@ -33,8 +33,14 @@ public sealed class X271DocumentParser
             ?? throw new X271ParseException("No ISA segment found — not a valid X12 interchange.");
 
         var isaRaw = FormatSegment(isa, content);
+        var delimiters = X12Delimiters.FromIsa(content);
 
-        return new X271Document { IsaRawText = isaRaw };
+        return new X271Document
+        {
+            IsaRawText = isaRaw,
+            Segments = segments,
+            Delimiters = delimiters,
+        };
     }
 
     private static string FormatSegment(X12Segment segment, string rawContent)
