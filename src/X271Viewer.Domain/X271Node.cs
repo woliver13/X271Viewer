@@ -15,4 +15,6 @@ public sealed class X271Node
     public IReadOnlyList<string> RawSegments { get; }
     public IReadOnlyList<X271Node> Children { get; }
     public bool IsCollapsedByDefault { get; }
+    public List<string> ValidationErrors { get; } = [];
+    public bool HasValidationErrors => ValidationErrors.Count > 0;
 }
