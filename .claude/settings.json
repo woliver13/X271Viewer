@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File scripts/Set-Version.ps1",
+            "if": "Bash(git commit*)",
+            "statusMessage": "Stamping build version...",
+            "shell": "powershell"
+          }
+        ]
+      }
+    ]
+  }
+}
