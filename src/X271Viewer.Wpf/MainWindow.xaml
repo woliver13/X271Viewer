@@ -22,9 +22,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Left pane: HL loop tree (placeholder for Phase 2) -->
+            <!-- Left pane: HL loop tree -->
             <Border Grid.Column="0" BorderBrush="#CCC" BorderThickness="0,0,1,0">
-                <TreeView x:Name="TreePane" Background="#FAFAFA"/>
+                <TreeView x:Name="TreePane" Background="#FAFAFA"
+                          SelectedItemChanged="TreePane_SelectedItemChanged"/>
             </Border>
 
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#DDD"/>
