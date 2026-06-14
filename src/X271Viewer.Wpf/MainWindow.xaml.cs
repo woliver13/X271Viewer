@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Title = AppTitleBuilder.Build(AppTitleBuilder.GetFileVersion());
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
