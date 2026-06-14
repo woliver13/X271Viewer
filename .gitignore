@@ -1,0 +1,64 @@
+# Build outputs
+bin/
+obj/
+out/
+publish/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# MSBuild
+*.cache
+*.log
+
+# Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml
+*.cobertura.xml
+
+# Publish profiles
+**/Properties/PublishProfiles/
+
+# WPF designer files
+**/*.g.cs
+**/*.g.i.cs
+
+# Roslyn analyzers / source generators
+*.GeneratedMSBuildEditorConfig.editorconfig
+
+# Local settings
+appsettings.Local.json
+*.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp / scratch
+*.tmp
+*.bak
+*.swp
+~$*
+
+# Claude Code
+.claude/
