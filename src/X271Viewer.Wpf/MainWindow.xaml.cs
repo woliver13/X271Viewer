@@ -43,10 +43,14 @@ public partial class MainWindow : Window
         };
 
         if (dlg.ShowDialog() != true) return;
+        OpenFile(dlg.FileName);
+    }
 
+    public void OpenFile(string path)
+    {
         try
         {
-            var content = File.ReadAllText(dlg.FileName);
+            var content = File.ReadAllText(path);
             var doc     = _parser.ParseContent(content);
             var root    = X271TreeBuilder.Build(doc);
 
