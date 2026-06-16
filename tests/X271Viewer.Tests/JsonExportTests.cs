@@ -12,6 +12,20 @@ public class JsonExportTests
     // ── Cycle 1 ──────────────────────────────────────────────────────────────
 
     [Fact]
+    public void Export_produces_indented_JSON()
+    {
+        var doc = new X271ExportDocument(
+            IsaRawText: "ISA*00*...",
+            Root: new X271ExportNode("Root", [], "no interpretation", [], []),
+            ValidationResults: []);
+
+        var json = X271JsonExporter.Export(doc);
+
+        Assert.Contains('\n', json);
+        Assert.Contains("  ", json);
+    }
+
+    [Fact]
     public void Export_produces_valid_JSON()
     {
         var doc = new X271ExportDocument(
