@@ -1,12 +1,12 @@
 using System.Reflection;
 
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class ArchitectureTests
 {
     [Theory]
-    [InlineData(typeof(X271Viewer.Domain.X271Document))]
-    [InlineData(typeof(X271Viewer.Application.Placeholder))]
+    [InlineData(typeof(woliver13.X271Viewer.Domain.X271Document))]
+    [InlineData(typeof(woliver13.X271Viewer.Application.Placeholder))]
     public void Assembly_has_no_wpf_references(Type typeInAssembly)
     {
         var assembly = typeInAssembly.Assembly;

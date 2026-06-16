@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace X271Viewer.Application;
+namespace woliver13.X271Viewer.Application;
 
 public static class AppTitleBuilder
 {

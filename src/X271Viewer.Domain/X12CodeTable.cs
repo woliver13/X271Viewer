@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace X271Viewer.Domain;
+namespace woliver13.X271Viewer.Domain;
 
 public static class X12CodeTable
 {

@@ -5,10 +5,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
-using X271Viewer.Application;
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Application;
+using woliver13.X271Viewer.Domain;
 
-namespace X271Viewer.Wpf;
+namespace woliver13.X271Viewer.Wpf;
 
 public partial class MainWindow : Window
 {

@@ -1,7 +1,7 @@
 using woliver13.X12Net.Core;
 using woliver13.X12Net.IO;
 
-namespace X271Viewer.Domain;
+namespace woliver13.X271Viewer.Domain;
 
 public sealed class X271DocumentParser
 {

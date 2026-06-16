@@ -1,7 +1,7 @@
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Domain;
 using woliver13.X12Net.Validation;
 
-namespace X271Viewer.Application;
+namespace woliver13.X271Viewer.Application;
 
 public sealed class X271ValidationService
 {

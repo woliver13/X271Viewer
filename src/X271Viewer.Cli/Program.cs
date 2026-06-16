@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using X271Viewer.Application;
+using woliver13.X271Viewer.Application;
 
 if (args.Length >= 1 && args[0].Equals("view", StringComparison.OrdinalIgnoreCase))
 {
