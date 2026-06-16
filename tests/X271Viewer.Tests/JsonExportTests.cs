@@ -1,8 +1,8 @@
 using System.Text.Json;
-using X271Viewer.Application;
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Application;
+using woliver13.X271Viewer.Domain;
 
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class JsonExportTests
 {

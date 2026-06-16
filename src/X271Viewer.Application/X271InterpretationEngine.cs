@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Text;
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Domain;
 
-namespace X271Viewer.Application;
+namespace woliver13.X271Viewer.Application;
 
 public static class X271InterpretationEngine
 {

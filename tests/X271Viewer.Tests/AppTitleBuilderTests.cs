@@ -1,6 +1,6 @@
-using X271Viewer.Application;
+using woliver13.X271Viewer.Application;
 
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class AppTitleBuilderTests
 {

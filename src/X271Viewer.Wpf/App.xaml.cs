@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace X271Viewer.Wpf;
+namespace woliver13.X271Viewer.Wpf;
 
 public partial class App : System.Windows.Application
 {

@@ -1,7 +1,7 @@
-using X271Viewer.Application;
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Application;
+using woliver13.X271Viewer.Domain;
 
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class ValidationTests
 {
@@ -74,9 +74,9 @@ public class ValidationTests
     public void AnnotateTree_Assigns_EB_Errors_To_Nodes_With_EB_Segment()
     {
         var content = File.ReadAllText(Path.Combine(FixtureDir, "malformed271.edi"));
-        var parser  = new X271Viewer.Domain.X271DocumentParser();
+        var parser  = new woliver13.X271Viewer.Domain.X271DocumentParser();
         var doc     = parser.ParseContent(content);
-        var root    = X271Viewer.Domain.X271TreeBuilder.Build(doc);
+        var root    = woliver13.X271Viewer.Domain.X271TreeBuilder.Build(doc);
 
         var svc    = new X271ValidationService();
         var result = svc.Validate(content);
@@ -87,7 +87,7 @@ public class ValidationTests
         Assert.True(anyNodeHasErrors);
     }
 
-    private static bool AnyNodeHasErrors(X271Viewer.Domain.X271Node node)
+    private static bool AnyNodeHasErrors(woliver13.X271Viewer.Domain.X271Node node)
     {
         if (node.HasValidationErrors) return true;
         return node.Children.Any(AnyNodeHasErrors);

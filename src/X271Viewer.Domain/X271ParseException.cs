@@ -1,4 +1,4 @@
-namespace X271Viewer.Domain;
+namespace woliver13.X271Viewer.Domain;
 
 public sealed class X271ParseException : Exception
 {

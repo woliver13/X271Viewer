@@ -1,4 +1,4 @@
-namespace X271Viewer.Application;
+namespace woliver13.X271Viewer.Application;
 
 public sealed class X271ValidationResult
 {

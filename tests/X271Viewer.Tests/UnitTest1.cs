@@ -1,4 +1,4 @@
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class UnitTest1
 {
