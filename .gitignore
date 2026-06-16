@@ -64,3 +64,7 @@ desktop.ini
 .claude/**
 !.claude/settings.json
 publish/
+
+# MSIX installer build artifacts and dev cert (contains private key)
+installer/out/
+installer/DevCert.pfx

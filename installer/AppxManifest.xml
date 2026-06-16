@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  MSIX package manifest for X271 Viewer.
+
+  Per-user installation is MSIX's default — no elevation required, files land in
+  %LocalAppData%\Packages\woliver13.X271Viewer_*\ and the start-menu shortcut is
+  per-user. Corporate policies that block per-machine installs do not affect this.
+
+  Before distributing:
+    1. Replace the Publisher value with the Subject of your code-signing certificate.
+       Run New-DevCert.ps1 to generate a dev cert; use a commercial cert for release.
+    2. Replace the placeholder PNGs in installer\Assets\ with real branding artwork.
+       Required sizes: Square44x44Logo (44×44), Square150x150Logo (150×150),
+                       Wide310x150Logo (310×150), StoreLogo (50×50).
+
+  Build: .\installer\Build-Msix.ps1
+         .\installer\Build-Msix.ps1 -CertThumbprint <thumbprint>   # with signing
+         .\installer\Build-Msix.ps1 -PfxPath cert.pfx -PfxPassword s3cr3t
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="rescap">
+
+  <!--
+    Version is substituted at build time from Directory.Build.props.
+    ProcessorArchitecture matches the dotnet publish -r win-x64 target.
+    Publisher must match the Subject CN of the signing certificate exactly.
+  -->
+  <Identity
+    Name="woliver13.X271Viewer"
+    Publisher="CN=Bill Oliver"
+    Version="__VERSION__"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>X271 Viewer</DisplayName>
+    <PublisherDisplayName>Bill Oliver</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <!-- Windows.Desktop targets the full Windows desktop (not Xbox, HoloLens, etc.) -->
+  <Dependencies>
+    <TargetDeviceFamily
+      Name="Windows.Desktop"
+      MinVersion="10.0.17763.0"
+      MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-US" />
+  </Resources>
+
+  <Applications>
+    <!--
+      EntryPoint="Windows.FullTrustApplication" is required for packaged WPF apps.
+      The Executable path is relative to the package root (where AppxManifest.xml lives).
+    -->
+    <Application
+      Id="X271Viewer"
+      Executable="X271Viewer.Wpf.exe"
+      EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="X271 Viewer"
+        Description="X12 271 EDI document viewer"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <!--
+    runFullTrust is required for any packaged Win32 / WPF / WinForms application.
+    Without it the package cannot launch a full-trust process.
+  -->
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+
+</Package>
