@@ -153,4 +153,27 @@ public class TreeBuilderTests
         var ebGroups = subscriber.Children.Where(n => n.Label.StartsWith("EB")).ToList();
         Assert.Equal(4, ebGroups.Count);
     }
+
+    // ── Cycle 8 — multiple subscriber loops (P2H5) ───────────────────────────
+
+    [Fact]
+    public void TreeBuilder_multiple_subscriber_loops_all_render()
+    {
+        var path   = Path.Combine(FixtureDir, "multi_subscriber271.edi");
+        var parser = new X271DocumentParser();
+        var doc    = parser.ParseFile(path);
+        var root   = X271TreeBuilder.Build(doc);
+        var st     = root.Children[0].Children[0];
+
+        var subscribers = st.Children
+            .Single(n => n.Label.Contains("Information Source")).Children
+            .Single(n => n.Label.Contains("Information Receiver")).Children
+            .Where(n => n.Label.Contains("Subscriber"))
+            .ToList();
+
+        // Two subscriber HL loops (HL 3 and HL 4) must both appear — no truncation
+        Assert.Equal(2, subscribers.Count);
+        Assert.Contains(subscribers, n => n.RawSegments.Any(s => s.Contains("ABC123456789")));
+        Assert.Contains(subscribers, n => n.RawSegments.Any(s => s.Contains("DEF987654321")));
+    }
 }

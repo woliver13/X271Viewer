@@ -117,4 +117,30 @@ public class CliRunnerTests
         Assert.Empty(stdout);
         Assert.NotEmpty(stderr);
     }
+
+    // ── Human-readable stderr (P6H2) ─────────────────────────────────────────
+
+    [Theory]
+    [InlineData("parse")]
+    [InlineData("interpret")]
+    [InlineData("validate")]
+    public void Error_message_on_missing_file_is_human_readable(string command)
+    {
+        var (_, _, stderr) = Exec(command, "nonexistent_file.edi");
+
+        Assert.StartsWith("Error:", stderr.TrimStart());
+        Assert.DoesNotContain(" at ", stderr);
+        Assert.DoesNotContain("Exception", stderr);
+        Assert.Contains("nonexistent_file.edi", stderr);
+    }
+
+    [Fact]
+    public void Error_message_on_parse_failure_is_human_readable()
+    {
+        var (_, _, stderr) = Exec("parse", FixturePath("not_x12.edi"));
+
+        Assert.StartsWith("Error:", stderr.TrimStart());
+        Assert.DoesNotContain(" at ", stderr);
+        Assert.DoesNotContain("Exception", stderr);
+    }
 }
