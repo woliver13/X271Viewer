@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
@@ -21,6 +22,7 @@ public partial class MainWindow : Window
     private X271Node?             _currentRoot             = null;
     private X271ValidationResult? _currentValidationResult = null;
     private string                _currentIsaRawText       = string.Empty;
+    private bool                  _searchPlaceholderActive = true;
 
     public MainWindow()
     {
@@ -85,18 +87,43 @@ public partial class MainWindow : Window
 
     private void PopulateTree(X271Node root)
     {
-        TreePane.Items.Clear();
-        TreePane.Items.Add(BuildTreeItem(root));
+        var query = ActiveSearchQuery();
+        PopulateTreeWithQuery(root, query);
     }
 
-    private static TreeViewItem BuildTreeItem(X271Node node)
+    private void PopulateTreeWithQuery(X271Node root, string query)
     {
+        TreePane.Items.Clear();
+
+        IReadOnlyList<X271Node> topNodes = [root];
+        var filtered = X271NodeFilter.Filter(topNodes, query);
+
+        NoResultsLabel.Visibility = (!string.IsNullOrWhiteSpace(query) && filtered.Count == 0)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+
+        foreach (var node in filtered)
+            TreePane.Items.Add(BuildTreeItem(node, query));
+    }
+
+    private static TreeViewItem BuildTreeItem(X271Node node, string query = "")
+    {
+        bool isFiltering = !string.IsNullOrWhiteSpace(query);
         var item = new TreeViewItem
         {
             Tag        = node,
-            IsExpanded = !node.IsCollapsedByDefault,
+            IsExpanded = isFiltering || !node.IsCollapsedByDefault,
         };
 
+        item.Header = BuildHeader(node, query);
+
+        foreach (var child in node.Children)
+            item.Items.Add(BuildTreeItem(child, query));
+        return item;
+    }
+
+    private static object BuildHeader(X271Node node, string query)
+    {
         if (node.HasValidationErrors)
         {
             var stack = new StackPanel { Orientation = Orientation.Horizontal };
@@ -106,17 +133,73 @@ public partial class MainWindow : Window
                 Foreground = Brushes.Red,
                 FontWeight = FontWeights.Bold,
             });
-            stack.Children.Add(new TextBlock { Text = node.Label });
-            item.Header = stack;
+            stack.Children.Add(BuildHighlightedTextBlock(node.Label, query));
+            return stack;
         }
-        else
+        return BuildHighlightedTextBlock(node.Label, query);
+    }
+
+    private static TextBlock BuildHighlightedTextBlock(string text, string query)
+    {
+        var tb = new TextBlock();
+        if (string.IsNullOrWhiteSpace(query))
         {
-            item.Header = node.Label;
+            tb.Text = text;
+            return tb;
         }
 
-        foreach (var child in node.Children)
-            item.Items.Add(BuildTreeItem(child));
-        return item;
+        int idx = 0;
+        while (idx < text.Length)
+        {
+            int match = text.IndexOf(query, idx, StringComparison.OrdinalIgnoreCase);
+            if (match < 0)
+            {
+                tb.Inlines.Add(new Run(text[idx..]));
+                break;
+            }
+            if (match > idx)
+                tb.Inlines.Add(new Run(text[idx..match]));
+
+            tb.Inlines.Add(new Run(text[match..(match + query.Length)])
+            {
+                Background = Brushes.Yellow,
+                FontWeight = FontWeights.Bold,
+            });
+            idx = match + query.Length;
+        }
+        return tb;
+    }
+
+    private string ActiveSearchQuery()
+    {
+        return _searchPlaceholderActive ? string.Empty : SearchBox.Text;
+    }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_searchPlaceholderActive) return;
+        if (_currentRoot is null) return;
+        PopulateTreeWithQuery(_currentRoot, SearchBox.Text);
+    }
+
+    private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
+    {
+        if (_searchPlaceholderActive)
+        {
+            _searchPlaceholderActive = false;
+            SearchBox.Text = string.Empty;
+            SearchBox.Foreground = SystemColors.WindowTextBrush;
+        }
+    }
+
+    private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(SearchBox.Text))
+        {
+            _searchPlaceholderActive = true;
+            SearchBox.Text = "Search…";
+            SearchBox.Foreground = Brushes.Gray;
+        }
     }
 
     private void Export_Click(object sender, RoutedEventArgs e)
