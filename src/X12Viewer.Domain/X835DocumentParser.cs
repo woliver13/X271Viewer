@@ -35,7 +35,8 @@ public sealed class X835DocumentParser
         var end = content.IndexOf('~');
         var isaRaw = end >= 0 ? content[..(end + 1)] : content;
 
-        var doc = new X835Document { IsaRawText = isaRaw };
+        var hasBpr = segments.Any(s => s.SegmentId == "BPR");
+        var doc = new X835Document { IsaRawText = isaRaw, HasBpr = hasBpr };
         BuildClaims(segments, doc.Claims);
         return doc;
     }

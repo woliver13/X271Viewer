@@ -16,4 +16,12 @@ public class X835ValidatorTests
         var result = new X835Validator().Validate(doc);
         Assert.Empty(result);
     }
+
+    [Fact]
+    public void Validate_MissingBpr_ReturnsError()
+    {
+        var doc = new X835Document(); // HasBpr defaults to false
+        var result = new X835Validator().Validate(doc);
+        Assert.Contains(result, r => r.Contains("BPR"));
+    }
 }
