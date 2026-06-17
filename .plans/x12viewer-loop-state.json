@@ -4,7 +4,7 @@
   "current_branch": null,
   "current_pr": null,
   "session_started_at": "2026-06-17T00:00:00Z",
-  "iteration_count": 7,
+  "iteration_count": 8,
   "max_iterations_per_session": 10,
   "phases": {
     "1": { "status": "complete", "depends_on": [], "slug": "solution-rename", "issue": 28, "branch": "phase/1-solution-rename", "pr": 35, "has_hitl": false, "completed_criteria": [] },
@@ -64,7 +64,8 @@
         "Pending and rejected claim nodes are visually distinguishable from accepted"
       ],
       "completed_criteria": [
-        "X277DocumentParser.ParseFile returns claims with ClaimId and STC status codes from the fixture"
+        "X277DocumentParser.ParseFile returns claims with ClaimId and STC status codes from the fixture",
+        "X277Interpreter.Interpret resolves STC01-1 category code F1 to Finalized"
       ]
     }
   }
