@@ -8,5 +8,6 @@ public sealed class X835Claim
     public decimal PaidAmount { get; set; }
     public string ClaimStatusCode { get; set; } = "";
     public string? RarcRemarkCode { get; set; }
+    public string? RarcRemarkDescription { get; init; }
     public List<X835ServiceLine> ServiceLines { get; init; } = new();
 }

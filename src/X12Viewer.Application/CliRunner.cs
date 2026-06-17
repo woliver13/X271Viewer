@@ -71,7 +71,8 @@ public static class CliRunner
             try
             {
                 var doc835 = new X835DocumentParser().ParseContent(content);
-                stdout.Write(JsonSerializer.Serialize(doc835, JsonCamelOptions));
+                var enriched = X835Interpreter.Interpret(doc835);
+                stdout.Write(JsonSerializer.Serialize(enriched, JsonCamelOptions));
                 return 0;
             }
             catch (X271ParseException ex)
