@@ -59,14 +59,21 @@ echo "Version: $VERSION"
 
 find_sdk_tool() {
     local name="$1"
-    # Search both the standalone SDK install and the VS-bundled SDK
-    find \
-        "/c/Program Files (x86)/Windows Kits/10/bin" \
-        "/c/Program Files/Windows Kits/10/bin" \
-        "/c/Program Files (x86)/Microsoft Visual Studio" \
-        "/c/Program Files/Microsoft Visual Studio" \
-        -name "$name" -path "*/x64/*" 2>/dev/null \
-        | sort -V | tail -1
+    # Only search directories that exist — find exits 1 on missing dirs and
+    # pipefail would abort the script if any candidate path is absent.
+    local candidates=(
+        "/c/Program Files (x86)/Windows Kits/10/bin"
+        "/c/Program Files/Windows Kits/10/bin"
+        "/c/Program Files (x86)/Windows Kits/10/App Certification Kit"
+        "/c/Program Files/Windows Kits/10/App Certification Kit"
+        "/c/Program Files (x86)/Microsoft Visual Studio"
+        "/c/Program Files/Microsoft Visual Studio"
+    )
+    for dir in "${candidates[@]}"; do
+        if [[ -d "$dir" ]]; then
+            find "$dir" -name "$name" 2>/dev/null
+        fi
+    done | sort -V | tail -1
 }
 
 MAKEAPPX=$(find_sdk_tool "makeappx.exe")
@@ -159,7 +166,7 @@ rm -f "$MSIX_PATH"
 
 echo ""
 echo "Packing MSIX..."
-"$MAKEAPPX" pack /d "$(cygpath -w "$LAYOUT_DIR")" /p "$(cygpath -w "$MSIX_PATH")" /nv /o
+MSYS_NO_PATHCONV=1 "$MAKEAPPX" pack /d "$(cygpath -w "$LAYOUT_DIR")" /p "$(cygpath -w "$MSIX_PATH")" /nv /o
 
 # ── Sign (optional) ────────────────────────────────────────────────────────────
 
@@ -183,7 +190,7 @@ if [[ -n "$THUMBPRINT" || -n "$PFX_PATH" ]]; then
     fi
 
     SIGN_ARGS+=("$(cygpath -w "$MSIX_PATH")")
-    "$SIGNTOOL" "${SIGN_ARGS[@]}"
+    MSYS_NO_PATHCONV=1 "$SIGNTOOL" "${SIGN_ARGS[@]}"
     echo "Signed."
 else
     echo ""
