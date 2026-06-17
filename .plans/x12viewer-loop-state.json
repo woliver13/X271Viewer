@@ -56,14 +56,16 @@
       "depends_on": ["2"],
       "slug": "276-277-viewer",
       "issue": 34,
-      "branch": null,
+      "branch": "phase/7-276-277-viewer",
       "pr": null,
       "has_hitl": true,
       "hitl_criteria": [
         "Opening a 277 file in WPF renders the claim status tree",
         "Pending and rejected claim nodes are visually distinguishable from accepted"
       ],
-      "completed_criteria": []
+      "completed_criteria": [
+        "X277DocumentParser.ParseFile returns claims with ClaimId and STC status codes from the fixture"
+      ]
     }
   }
 }
