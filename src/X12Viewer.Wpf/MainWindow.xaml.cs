@@ -66,6 +66,11 @@ public partial class MainWindow : Window
                 _current835FilePath = path;
                 Open835File(content);
             }
+            else if (st01 is "277" or "276")
+            {
+                _current835FilePath = null;
+                Open277File(content);
+            }
             else
             {
                 _current835FilePath = null;
@@ -120,6 +125,27 @@ public partial class MainWindow : Window
         InterpretationPane.Text      = _835ValidationText;
         InterpretationPane.FontStyle  = FontStyles.Normal;
         InterpretationPane.Foreground = _835ValidationBrush;
+    }
+
+    private void Open277File(string content)
+    {
+        _is835Loaded = false;
+        UpdateExportMenuState();
+
+        var doc277      = new X277DocumentParser().ParseContent(content);
+        var enriched    = X277Interpreter.Interpret(doc277);
+        var root        = X277TreeBuilder.Build(enriched);
+
+        _currentRoot             = root;
+        _currentValidationResult = null;
+        _currentIsaRawText       = content;
+
+        PopulateTree(root);
+        RawSegmentPane.Text = content;
+
+        InterpretationPane.Text      = "✓ Claim status loaded.";
+        InterpretationPane.FontStyle  = FontStyles.Normal;
+        InterpretationPane.Foreground = Brushes.DarkGreen;
     }
 
     private void UpdateExportMenuState()
