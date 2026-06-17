@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   MSIX package manifest for X271 Viewer.
 
   Per-user installation is MSIX's default — no elevation required, files land in
-  %LocalAppData%\Packages\woliver13.X271Viewer_*\ and the start-menu shortcut is
+  %LocalAppData%\Packages\woliver13.X12Viewer_*\ and the start-menu shortcut is
   per-user. Corporate policies that block per-machine installs do not affect this.
 
   Before distributing:
@@ -29,7 +29,7 @@
     Publisher must match the Subject CN of the signing certificate exactly.
   -->
   <Identity
-    Name="woliver13.X271Viewer"
+    Name="woliver13.X12Viewer"
     Publisher="CN=Bill Oliver"
     Version="__VERSION__"
     ProcessorArchitecture="x64" />
@@ -58,8 +58,8 @@
       The Executable path is relative to the package root (where AppxManifest.xml lives).
     -->
     <Application
-      Id="X271Viewer"
-      Executable="X271Viewer.Wpf.exe"
+      Id="X12Viewer"
+      Executable="X12Viewer.Wpf.exe"
       EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="X271 Viewer"

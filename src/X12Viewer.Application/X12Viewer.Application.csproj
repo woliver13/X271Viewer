@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>woliver13.X12Viewer.Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\X12Viewer.Domain\X12Viewer.Domain.csproj" />
+    <ProjectReference Include="..\..\..\X12Net\src\X12Net.Domain\X12Net.Domain.csproj" />
+    <ProjectReference Include="..\..\..\X12Net\src\X12Net.Infrastructure\X12Net.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\X12Net\src\X12Net.Application\X12Net.Application.csproj" />
+  </ItemGroup>
+
+</Project>

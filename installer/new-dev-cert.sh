@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # new-dev-cert.sh — create a self-signed code-signing certificate for development
-#                   sideloading of the X271Viewer MSIX package.
+#                   sideloading of the X12Viewer MSIX package.
 #
 # Usage (run once per developer machine, from an elevated Git Bash terminal):
 #   ./installer/new-dev-cert.sh
@@ -16,7 +16,7 @@
 #   ./installer/build-msix.sh --thumbprint <thumbprint>
 #
 # To install the signed package (PowerShell):
-#   Add-AppxPackage ./installer/out/X271Viewer_*.msix
+#   Add-AppxPackage ./installer/out/X12Viewer_*.msix
 
 set -euo pipefail
 
@@ -35,7 +35,7 @@ THUMBPRINT=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
     -Type Custom \`
     -Subject '$SUBJECT' \`
     -KeyUsage DigitalSignature \`
-    -FriendlyName 'X271Viewer Dev Signing Cert' \`
+    -FriendlyName 'X12Viewer Dev Signing Cert' \`
     -CertStoreLocation 'Cert:\CurrentUser\My' \`
     -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3','2.5.29.19={text}')
 
@@ -63,4 +63,4 @@ echo "To build and sign the MSIX:"
 echo "  ./installer/build-msix.sh --thumbprint $THUMBPRINT"
 echo ""
 echo "To install the signed package (PowerShell):"
-echo "  Add-AppxPackage ./installer/out/X271Viewer_*.msix"
+echo "  Add-AppxPackage ./installer/out/X12Viewer_*.msix"
