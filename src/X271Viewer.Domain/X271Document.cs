@@ -1,6 +1,6 @@
 using woliver13.X12Net.Core;
 
-namespace X271Viewer.Domain;
+namespace woliver13.X271Viewer.Domain;
 
 public sealed class X271Document
 {

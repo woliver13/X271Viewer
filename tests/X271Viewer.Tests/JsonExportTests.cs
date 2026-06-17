@@ -1,8 +1,8 @@
 using System.Text.Json;
-using X271Viewer.Application;
-using X271Viewer.Domain;
+using woliver13.X271Viewer.Application;
+using woliver13.X271Viewer.Domain;
 
-namespace X271Viewer.Tests;
+namespace woliver13.X271Viewer.Tests;
 
 public class JsonExportTests
 {
@@ -10,6 +10,20 @@ public class JsonExportTests
         Path.Combine(AppContext.BaseDirectory, "Fixtures");
 
     // ── Cycle 1 ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Export_produces_indented_JSON()
+    {
+        var doc = new X271ExportDocument(
+            IsaRawText: "ISA*00*...",
+            Root: new X271ExportNode("Root", [], "no interpretation", [], []),
+            ValidationResults: []);
+
+        var json = X271JsonExporter.Export(doc);
+
+        Assert.Contains('\n', json);
+        Assert.Contains("  ", json);
+    }
 
     [Fact]
     public void Export_produces_valid_JSON()
