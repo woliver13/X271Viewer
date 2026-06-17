@@ -23,6 +23,8 @@ public partial class MainWindow : Window
     private X271ValidationResult? _currentValidationResult = null;
     private string                _currentIsaRawText       = string.Empty;
     private bool                  _searchPlaceholderActive = true;
+    private bool                  _is835Loaded             = false;
+    private string?               _current835FilePath      = null;
 
     public MainWindow()
     {
@@ -59,10 +61,12 @@ public partial class MainWindow : Window
 
             if (st01 == "835")
             {
+                _current835FilePath = path;
                 Open835File(content);
             }
             else
             {
+                _current835FilePath = null;
                 Open271File(content);
             }
         }
@@ -92,6 +96,8 @@ public partial class MainWindow : Window
         _currentRoot             = root;
         _currentValidationResult = null;
         _currentIsaRawText       = doc.IsaRawText;
+        _is835Loaded             = true;
+        UpdateExportMenuState();
 
         PopulateTree(root);
         RawSegmentPane.Text = doc.IsaRawText;
@@ -101,8 +107,15 @@ public partial class MainWindow : Window
         InterpretationPane.Foreground = Brushes.Gray;
     }
 
+    private void UpdateExportMenuState()
+    {
+        ExportCsvMenuItem.IsEnabled = _is835Loaded;
+    }
+
     private void Open271File(string content)
     {
+        _is835Loaded = false;
+        UpdateExportMenuState();
         var doc    = _parser.ParseContent(content);
         var root   = X271TreeBuilder.Build(doc);
 
@@ -280,6 +293,32 @@ public partial class MainWindow : Window
                 _currentRoot, _currentValidationResult, _currentIsaRawText);
             var json = X271JsonExporter.Export(exportDoc);
             File.WriteAllText(dlg.FileName, json);
+            MessageBox.Show($"Exported to:{Environment.NewLine}{dlg.FileName}",
+                "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Export failed: {ex.Message}", "Export Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void ExportCsv_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentRoot is null || !_is835Loaded) return;
+        var dlg = new SaveFileDialog
+        {
+            Title      = "Export 835 as CSV",
+            Filter     = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+            DefaultExt = ".csv",
+            FileName   = "export835.csv",
+        };
+        if (dlg.ShowDialog() != true) return;
+        try
+        {
+            var doc = new X835DocumentParser().ParseFile(_current835FilePath!);
+            var csv = X835CsvExporter.Export(doc);
+            File.WriteAllText(dlg.FileName, csv, System.Text.Encoding.UTF8);
             MessageBox.Show($"Exported to:{Environment.NewLine}{dlg.FileName}",
                 "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
