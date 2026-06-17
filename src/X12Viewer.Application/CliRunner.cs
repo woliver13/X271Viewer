@@ -38,12 +38,29 @@ public static class CliRunner
         if (doc is null) return 2;
 
         var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
-        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        var st01 = st?.Elements.Count > 0 ? st.Elements[0] : "";
+
+        if (st01 == "835")
         {
             try
             {
                 var doc835 = new X835DocumentParser().ParseContent(content);
                 stdout.Write(JsonSerializer.Serialize(doc835, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
+        if (st01 is "277" or "276")
+        {
+            try
+            {
+                var doc277 = new X277DocumentParser().ParseContent(content);
+                stdout.Write(JsonSerializer.Serialize(doc277, JsonCamelOptions));
                 return 0;
             }
             catch (X271ParseException ex)
@@ -67,13 +84,31 @@ public static class CliRunner
         if (doc is null) return 2;
 
         var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
-        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        var st01i = st?.Elements.Count > 0 ? st.Elements[0] : "";
+
+        if (st01i == "835")
         {
             try
             {
                 var doc835 = new X835DocumentParser().ParseContent(content);
                 var enriched = X835Interpreter.Interpret(doc835);
                 stdout.Write(JsonSerializer.Serialize(enriched, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
+        if (st01i is "277" or "276")
+        {
+            try
+            {
+                var doc277 = new X277DocumentParser().ParseContent(content);
+                var enriched277 = X277Interpreter.Interpret(doc277);
+                stdout.Write(JsonSerializer.Serialize(enriched277, JsonCamelOptions));
                 return 0;
             }
             catch (X271ParseException ex)

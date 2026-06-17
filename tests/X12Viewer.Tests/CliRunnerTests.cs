@@ -207,4 +207,26 @@ public class CliRunnerTests
         Assert.NotEqual(0, exit);
         Assert.StartsWith("Error:", stderr.TrimStart());
     }
+
+    // ── Phase 7: 277 routing ─────────────────────────────────────────────────
+
+    [Fact]
+    public void Cli_parse_277_routes_to_X277_parser_exits_0_JSON()
+    {
+        var (exit, stdout, stderr) = Exec("parse", FixturePath("tests277.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+        Assert.Contains("claimId", stdout, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Cli_interpret_277_emits_enriched_JSON_with_StatusDescription()
+    {
+        var (exit, stdout, stderr) = Exec("interpret", FixturePath("tests277.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+        Assert.Contains("statusDescription", stdout, StringComparison.OrdinalIgnoreCase);
+    }
 }
