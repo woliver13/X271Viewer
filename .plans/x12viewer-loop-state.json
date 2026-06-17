@@ -1,0 +1,97 @@
+{
+  "feature_branch": "feature/x12viewer-suite",
+  "current_phase": 1,
+  "current_branch": null,
+  "current_pr": null,
+  "session_started_at": "2026-06-17T00:00:00Z",
+  "iteration_count": 1,
+  "max_iterations_per_session": 10,
+  "phases": {
+    "1": {
+      "status": "pending",
+      "depends_on": [],
+      "slug": "solution-rename",
+      "issue": 28,
+      "branch": null,
+      "pr": null,
+      "has_hitl": false,
+      "completed_criteria": []
+    },
+    "2": {
+      "status": "pending",
+      "depends_on": ["1"],
+      "slug": "835-parser",
+      "issue": 29,
+      "branch": null,
+      "pr": null,
+      "has_hitl": false,
+      "completed_criteria": []
+    },
+    "3": {
+      "status": "pending",
+      "depends_on": ["2"],
+      "slug": "carc-rarc-interpretation",
+      "issue": 30,
+      "branch": null,
+      "pr": null,
+      "has_hitl": false,
+      "completed_criteria": []
+    },
+    "4": {
+      "status": "pending",
+      "depends_on": ["3"],
+      "slug": "835-tree-view",
+      "issue": 31,
+      "branch": null,
+      "pr": null,
+      "has_hitl": true,
+      "hitl_criteria": [
+        "Opening an 835 file in WPF renders the claim tree without error",
+        "Opening a 271 file in WPF after opening an 835 renders the 271 tree correctly",
+        "Fully paid claim node is visually distinct from denied claim node"
+      ],
+      "completed_criteria": []
+    },
+    "5": {
+      "status": "pending",
+      "depends_on": ["3"],
+      "slug": "835-csv-export",
+      "issue": 32,
+      "branch": null,
+      "pr": null,
+      "has_hitl": true,
+      "hitl_criteria": [
+        "Exported CSV opens in Excel without errors",
+        "WPF Export CSV button is enabled when 835 is loaded and disabled when 271 is loaded"
+      ],
+      "completed_criteria": []
+    },
+    "6": {
+      "status": "pending",
+      "depends_on": ["2"],
+      "slug": "835-validation",
+      "issue": 33,
+      "branch": null,
+      "pr": null,
+      "has_hitl": true,
+      "hitl_criteria": [
+        "Validation results appear in the WPF validation panel when an 835 is loaded"
+      ],
+      "completed_criteria": []
+    },
+    "7": {
+      "status": "pending",
+      "depends_on": ["2"],
+      "slug": "276-277-viewer",
+      "issue": 34,
+      "branch": null,
+      "pr": null,
+      "has_hitl": true,
+      "hitl_criteria": [
+        "Opening a 277 file in WPF renders the claim status tree",
+        "Pending and rejected claim nodes are visually distinguishable from accepted"
+      ],
+      "completed_criteria": []
+    }
+  }
+}

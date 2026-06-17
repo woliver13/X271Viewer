@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>woliver13.X12Viewer.Cli</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\X12Viewer.Application\X12Viewer.Application.csproj" />
+    <ProjectReference Include="..\X12Viewer.Domain\X12Viewer.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
