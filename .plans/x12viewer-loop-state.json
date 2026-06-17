@@ -37,12 +37,19 @@
       "slug": "835-validation",
       "issue": 33,
       "branch": "phase/6-835-validation",
-      "pr": null,
+      "pr": 40,
       "has_hitl": true,
       "hitl_criteria": [
         "Validation results appear in the WPF validation panel when an 835 is loaded"
       ],
-      "completed_criteria": []
+      "completed_criteria": [
+        "X835Validator.Validate returns zero results for a well-formed 835 fixture",
+        "Missing BPR segment produces a validation result with a human-readable message",
+        "Invalid CAS group code produces a validation result",
+        "Non-numeric CLP03 (billed amount) produces a validation result",
+        "CLI validate on 835 fixture exits 0 and emits no errors",
+        "CLI validate on a malformed 835 exits non-zero and emits human-readable errors"
+      ]
     },
     "7": {
       "status": "pending",
