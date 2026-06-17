@@ -143,4 +143,46 @@ public class CliRunnerTests
         Assert.DoesNotContain(" at ", stderr);
         Assert.DoesNotContain("Exception", stderr);
     }
+
+    // ── Phase 2: 835 routing ─────────────────────────────────────────────────
+
+    [Fact]
+    public void Cli_parse_835_routes_to_X835_parser_exits_0_JSON()
+    {
+        var (exit, stdout, stderr) = Exec("parse", FixturePath("tests835.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+
+        using var doc = JsonDocument.Parse(stdout);
+        var root = doc.RootElement;
+        Assert.True(root.TryGetProperty("claims", out var claims));
+        Assert.Equal(JsonValueKind.Array, claims.ValueKind);
+        Assert.Equal(4, claims.GetArrayLength());
+    }
+
+    [Fact]
+    public void Cli_parse_271_still_works_unchanged()
+    {
+        var (exit, stdout, stderr) = Exec("parse", FixturePath("full271.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+
+        using var doc = JsonDocument.Parse(stdout);
+        Assert.True(doc.RootElement.TryGetProperty("segments", out var segs));
+        Assert.Equal(JsonValueKind.Array, segs.ValueKind);
+    }
+
+    [Fact]
+    public void Cli_interpret_835_emits_X835Document_as_JSON()
+    {
+        var (exit, stdout, stderr) = Exec("interpret", FixturePath("tests835.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+
+        using var doc = JsonDocument.Parse(stdout);
+        Assert.True(doc.RootElement.TryGetProperty("claims", out _));
+    }
 }
