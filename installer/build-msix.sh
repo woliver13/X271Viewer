@@ -1,19 +1,19 @@
-#!/usr/bin/env bash
-# build-msix.sh — publish X271Viewer.Wpf and pack it as a per-user MSIX.
+﻿#!/usr/bin/env bash
+# build-msix.sh — publish X12Viewer.Wpf and pack it as a per-user MSIX.
 #
 # Usage:
 #   ./installer/build-msix.sh                                # unsigned
 #   ./installer/build-msix.sh --thumbprint <SHA1>            # sign with installed cert
 #   ./installer/build-msix.sh --pfx cert.pfx --pfx-pass s3  # sign with PFX
 #
-# Output: installer/out/X271Viewer_<version>.msix
+# Output: installer/out/X12Viewer_<version>.msix
 #
 # Prerequisites:
 #   • .NET 9 SDK
 #   • Windows 10/11 SDK  (makeappx.exe, signtool.exe)
 #   • Python 3 in PATH   (for placeholder asset generation)
 #
-# Per-user install:  Add-AppxPackage ./installer/out/X271Viewer_*.msix
+# Per-user install:  Add-AppxPackage ./installer/out/X12Viewer_*.msix
 #   (Run in PowerShell after installing a trusted signing cert — see new-dev-cert.sh)
 
 set -euo pipefail
@@ -38,7 +38,7 @@ done
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-WPF_PROJ="$REPO_ROOT/src/X271Viewer.Wpf/X271Viewer.Wpf.csproj"
+WPF_PROJ="$REPO_ROOT/src/X12Viewer.Wpf/X12Viewer.Wpf.csproj"
 BUILD_PROPS="$REPO_ROOT/Directory.Build.props"
 MANIFEST_SRC="$SCRIPT_DIR/AppxManifest.xml"
 ASSETS_SRC="$SCRIPT_DIR/Assets"
@@ -160,7 +160,7 @@ done
 
 # ── Pack ───────────────────────────────────────────────────────────────────────
 
-MSIX_NAME="X271Viewer_${VERSION}.msix"
+MSIX_NAME="X12Viewer_${VERSION}.msix"
 MSIX_PATH="$OUT_DIR/$MSIX_NAME"
 rm -f "$MSIX_PATH"
 
