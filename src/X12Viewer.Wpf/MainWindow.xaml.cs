@@ -39,7 +39,7 @@ public partial class MainWindow : Window
     {
         var dlg = new OpenFileDialog
         {
-            Title = "Open X12 271 File",
+            Title = "Open X12 File (271 or 835)",
             Filter = "EDI files (*.edi;*.txt;*.x12)|*.edi;*.txt;*.x12|All files (*.*)|*.*",
             FilterIndex = 1
         };
@@ -53,35 +53,80 @@ public partial class MainWindow : Window
         try
         {
             var content = File.ReadAllText(path);
-            var doc     = _parser.ParseContent(content);
-            var root    = X271TreeBuilder.Build(doc);
 
-            var validationResult = _validator.Validate(content);
-            _validator.AnnotateTree(root, validationResult);
+            // Detect transaction type via ST01
+            var st01 = DetectSt01(content);
 
-            _currentRoot             = root;
-            _currentValidationResult = validationResult;
-            _currentIsaRawText       = doc.IsaRawText;
-
-            PopulateTree(root);
-            RawSegmentPane.Text = doc.IsaRawText;
-
-            if (validationResult.IsValid)
+            if (st01 == "835")
             {
-                InterpretationPane.Text      = "✓ No validation errors.";
-                InterpretationPane.FontStyle  = FontStyles.Normal;
-                InterpretationPane.Foreground = Brushes.DarkGreen;
+                Open835File(content);
             }
             else
             {
-                InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
-                InterpretationPane.FontStyle  = FontStyles.Italic;
-                InterpretationPane.Foreground = Brushes.Gray;
+                Open271File(content);
             }
         }
         catch (X271ParseException ex)
         {
             MessageBox.Show(ex.Message, "Cannot Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private static string DetectSt01(string content)
+    {
+        // Find "ST*XXX*" pattern — ST01 is the transaction set identifier
+        var stIdx = content.IndexOf("ST*", StringComparison.Ordinal);
+        if (stIdx < 0) return "";
+        var afterSt  = content[(stIdx + 3)..];
+        var starIdx  = afterSt.IndexOf('*');
+        var tildeIdx = afterSt.IndexOf('~');
+        var end      = starIdx >= 0 ? starIdx : tildeIdx;
+        return end >= 0 ? afterSt[..end] : "";
+    }
+
+    private void Open835File(string content)
+    {
+        var doc  = new X835DocumentParser().ParseContent(content);
+        var root = X835TreeBuilder.Build(doc);
+
+        _currentRoot             = root;
+        _currentValidationResult = null;
+        _currentIsaRawText       = doc.IsaRawText;
+
+        PopulateTree(root);
+        RawSegmentPane.Text = doc.IsaRawText;
+
+        InterpretationPane.Text      = "Select a claim node to view details.";
+        InterpretationPane.FontStyle  = FontStyles.Italic;
+        InterpretationPane.Foreground = Brushes.Gray;
+    }
+
+    private void Open271File(string content)
+    {
+        var doc    = _parser.ParseContent(content);
+        var root   = X271TreeBuilder.Build(doc);
+
+        var validationResult = _validator.Validate(content);
+        _validator.AnnotateTree(root, validationResult);
+
+        _currentRoot             = root;
+        _currentValidationResult = validationResult;
+        _currentIsaRawText       = doc.IsaRawText;
+
+        PopulateTree(root);
+        RawSegmentPane.Text = doc.IsaRawText;
+
+        if (validationResult.IsValid)
+        {
+            InterpretationPane.Text      = "✓ No validation errors.";
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.DarkGreen;
+        }
+        else
+        {
+            InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
+            InterpretationPane.FontStyle  = FontStyles.Italic;
+            InterpretationPane.Foreground = Brushes.Gray;
         }
     }
 
@@ -204,9 +249,16 @@ public partial class MainWindow : Window
 
     private void Export_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentRoot is null || _currentValidationResult is null)
+        if (_currentRoot is null)
         {
-            MessageBox.Show("Open a 271 file first.", "Nothing to Export",
+            MessageBox.Show("Open a file first.", "Nothing to Export",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        if (_currentValidationResult is null)
+        {
+            MessageBox.Show("Export is not available for 835 files yet.", "Export Not Supported",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -243,6 +295,15 @@ public partial class MainWindow : Window
         if (e.NewValue is not TreeViewItem { Tag: X271Node node }) return;
 
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
+
+        // 835 nodes carry no raw segments — show the node label as a summary
+        if (node.RawSegments.Count == 0 && _currentValidationResult is null)
+        {
+            InterpretationPane.Text      = node.Label;
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.Black;
+            return;
+        }
 
         if (node.HasValidationErrors)
         {
