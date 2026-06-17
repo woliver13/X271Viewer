@@ -6,6 +6,11 @@ namespace woliver13.X12Viewer.Application;
 public static class CliRunner
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions JsonCamelOptions = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+    };
 
     public static int Run(string[] args, TextWriter stdout, TextWriter stderr)
     {
@@ -31,6 +36,22 @@ public static class CliRunner
         var doc = ParseDoc(content, stderr);
         if (doc is null) return 2;
 
+        var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
+        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        {
+            try
+            {
+                var doc835 = new X835DocumentParser().ParseContent(content);
+                stdout.Write(JsonSerializer.Serialize(doc835, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
         var segments = doc.Segments.Select(s => X271TreeBuilder.SegmentToRaw(s, doc.Delimiters)).ToList();
         stdout.Write(JsonSerializer.Serialize(new { segments }, JsonOptions));
         return 0;
@@ -43,6 +64,22 @@ public static class CliRunner
 
         var doc = ParseDoc(content, stderr);
         if (doc is null) return 2;
+
+        var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
+        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        {
+            try
+            {
+                var doc835 = new X835DocumentParser().ParseContent(content);
+                stdout.Write(JsonSerializer.Serialize(doc835, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
 
         var root      = X271TreeBuilder.Build(doc);
         var validator = new X271ValidationService();
