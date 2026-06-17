@@ -98,6 +98,33 @@ public static class CliRunner
         var content = ReadFile(filePath, stderr);
         if (content is null) return 1;
 
+        var doc = ParseDoc(content, stderr);
+        if (doc is null) return 2;
+
+        var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
+        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        {
+            try
+            {
+                var doc835  = new X835DocumentParser().ParseContent(content);
+                var issues  = new X835Validator().Validate(doc835);
+                if (issues.Count == 0)
+                {
+                    stdout.Write(JsonSerializer.Serialize(new { isValid = true, errors = Array.Empty<string>() }, JsonOptions));
+                    return 0;
+                }
+                stderr.WriteLine($"Error: {issues.Count} validation issue(s) found.");
+                foreach (var issue in issues)
+                    stderr.WriteLine($"  - {issue}");
+                return 1;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
         var validator = new X271ValidationService();
         var result    = validator.Validate(content);
         var errors    = result.Errors.Select(e => new { code = e.Code, message = e.Message }).ToList();

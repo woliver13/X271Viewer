@@ -185,4 +185,26 @@ public class CliRunnerTests
         using var doc = JsonDocument.Parse(stdout);
         Assert.True(doc.RootElement.TryGetProperty("claims", out _));
     }
+
+    // ── Phase 6: 835 validation CLI ──────────────────────────────────────────
+
+    [Fact]
+    public void Cli_validate_835_exits_0()
+    {
+        var (exit, stdout, stderr) = Exec("validate", FixturePath("tests835.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+        using var doc = JsonDocument.Parse(stdout);
+        Assert.Equal(JsonValueKind.True, doc.RootElement.GetProperty("isValid").ValueKind);
+    }
+
+    [Fact]
+    public void Cli_validate_malformed_835_exits_nonzero_with_human_readable_error()
+    {
+        var (exit, _, stderr) = Exec("validate", FixturePath("malformed835.edi"));
+
+        Assert.NotEqual(0, exit);
+        Assert.StartsWith("Error:", stderr.TrimStart());
+    }
 }

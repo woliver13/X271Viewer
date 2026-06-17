@@ -1,83 +1,55 @@
 {
   "feature_branch": "feature/x12viewer-suite",
-  "current_phase": 1,
-  "current_branch": null,
+  "current_phase": 6,
+  "current_branch": "phase/6-835-validation",
   "current_pr": null,
   "session_started_at": "2026-06-17T00:00:00Z",
-  "iteration_count": 1,
+  "iteration_count": 6,
   "max_iterations_per_session": 10,
   "phases": {
-    "1": {
-      "status": "pending",
-      "depends_on": [],
-      "slug": "solution-rename",
-      "issue": 28,
-      "branch": null,
-      "pr": null,
-      "has_hitl": false,
-      "completed_criteria": []
-    },
-    "2": {
-      "status": "pending",
-      "depends_on": ["1"],
-      "slug": "835-parser",
-      "issue": 29,
-      "branch": null,
-      "pr": null,
-      "has_hitl": false,
-      "completed_criteria": []
-    },
-    "3": {
-      "status": "pending",
-      "depends_on": ["2"],
-      "slug": "carc-rarc-interpretation",
-      "issue": 30,
-      "branch": null,
-      "pr": null,
-      "has_hitl": false,
-      "completed_criteria": []
-    },
-    "4": {
-      "status": "pending",
-      "depends_on": ["3"],
-      "slug": "835-tree-view",
-      "issue": 31,
-      "branch": null,
-      "pr": null,
-      "has_hitl": true,
-      "hitl_criteria": [
-        "Opening an 835 file in WPF renders the claim tree without error",
-        "Opening a 271 file in WPF after opening an 835 renders the 271 tree correctly",
-        "Fully paid claim node is visually distinct from denied claim node"
-      ],
-      "completed_criteria": []
-    },
+    "1": { "status": "complete", "depends_on": [], "slug": "solution-rename", "issue": 28, "branch": "phase/1-solution-rename", "pr": 35, "has_hitl": false, "completed_criteria": [] },
+    "2": { "status": "complete", "depends_on": ["1"], "slug": "835-parser", "issue": 29, "branch": "phase/2-835-parser", "pr": 36, "has_hitl": false, "completed_criteria": [] },
+    "3": { "status": "complete", "depends_on": ["2"], "slug": "carc-rarc-interpretation", "issue": 30, "branch": "phase/3-carc-rarc-interpretation", "pr": 37, "has_hitl": false, "completed_criteria": [] },
+    "4": { "status": "complete", "depends_on": ["3"], "slug": "835-tree-view", "issue": 31, "branch": "phase/4-835-tree-view", "pr": 38, "has_hitl": true, "hitl_criteria": [], "completed_criteria": [] },
     "5": {
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["3"],
       "slug": "835-csv-export",
       "issue": 32,
-      "branch": null,
-      "pr": null,
+      "branch": "phase/5-835-csv-export",
+      "pr": 39,
       "has_hitl": true,
       "hitl_criteria": [
         "Exported CSV opens in Excel without errors",
         "WPF Export CSV button is enabled when 835 is loaded and disabled when 271 is loaded"
       ],
-      "completed_criteria": []
+      "completed_criteria": [
+        "X835CsvExporter.Export produces header + one data row per SVC segment",
+        "Each data row contains parent CLP ClaimId and PatientName",
+        "CARC description column populated from interpreted document",
+        "Denied claim with no SVC produces one row with zero SvcBilled",
+        "CLI export on 835 fixture exits 0 with correct header and row count"
+      ]
     },
     "6": {
-      "status": "pending",
+      "status": "in_progress",
       "depends_on": ["2"],
       "slug": "835-validation",
       "issue": 33,
-      "branch": null,
-      "pr": null,
+      "branch": "phase/6-835-validation",
+      "pr": 40,
       "has_hitl": true,
       "hitl_criteria": [
         "Validation results appear in the WPF validation panel when an 835 is loaded"
       ],
-      "completed_criteria": []
+      "completed_criteria": [
+        "X835Validator.Validate returns zero results for a well-formed 835 fixture",
+        "Missing BPR segment produces a validation result with a human-readable message",
+        "Invalid CAS group code produces a validation result",
+        "Non-numeric CLP03 (billed amount) produces a validation result",
+        "CLI validate on 835 fixture exits 0 and emits no errors",
+        "CLI validate on a malformed 835 exits non-zero and emits human-readable errors"
+      ]
     },
     "7": {
       "status": "pending",
