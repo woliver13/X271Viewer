@@ -48,4 +48,16 @@ public class X835ValidatorTests
         var result = new X835Validator().Validate(doc);
         Assert.Contains(result, r => r.Contains("group code") || r.Contains("CAS"));
     }
+
+    [Fact]
+    public void Validate_NonNumericClp03_ReturnsError()
+    {
+        var doc = new X835Document
+        {
+            HasBpr = true,
+            Claims = [ new X835Claim { RawBilledAmount = "INVALID" } ]
+        };
+        var result = new X835Validator().Validate(doc);
+        Assert.Contains(result, r => r.Contains("CLP03") || r.Contains("billed amount"));
+    }
 }

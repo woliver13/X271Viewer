@@ -59,10 +59,11 @@ public sealed class X835DocumentParser
                     }
                     currentClaim = new X835Claim
                     {
-                        ClaimId         = SafeGet(seg, 1),
-                        ClaimStatusCode = SafeGet(seg, 2),
-                        BilledAmount    = ParseDecimal(SafeGet(seg, 3)),
-                        PaidAmount      = ParseDecimal(SafeGet(seg, 4)),
+                        ClaimId          = SafeGet(seg, 1),
+                        ClaimStatusCode  = SafeGet(seg, 2),
+                        RawBilledAmount  = SafeGet(seg, 3),
+                        BilledAmount     = ParseDecimal(SafeGet(seg, 3)),
+                        PaidAmount       = ParseDecimal(SafeGet(seg, 4)),
                         // PatientName filled by subsequent NM1*QC
                     };
                     currentSvc = null;
