@@ -22,6 +22,7 @@ public static class CliRunner
             "parse"             => RunParse(filePath, stdout, stderr),
             "interpret"         => RunInterpret(filePath, stdout, stderr),
             "validate"          => RunValidate(filePath, stdout, stderr),
+            "export"            => RunExport(filePath, stdout, stderr),
             "view"              => RunHelp(stdout), // view handled by Program.cs; show help in tests
             "--help" or "help"  => RunHelp(stdout),
             _                   => RunHelp(stdout),
@@ -104,6 +105,35 @@ public static class CliRunner
         return 0;
     }
 
+    private static int RunExport(string? filePath, TextWriter stdout, TextWriter stderr)
+    {
+        var content = ReadFile(filePath, stderr);
+        if (content is null) return 1;
+
+        var doc = ParseDoc(content, stderr);
+        if (doc is null) return 2;
+
+        var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
+        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        {
+            try
+            {
+                var doc835 = new X835DocumentParser().ParseContent(content);
+                var csv = X835CsvExporter.Export(doc835);
+                stdout.Write(csv);
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
+        stderr.WriteLine("Error: export is only supported for 835 files");
+        return 1;
+    }
+
     private static int RunHelp(TextWriter stdout)
     {
         stdout.WriteLine("Usage: x271 <command> [file]");
@@ -112,6 +142,7 @@ public static class CliRunner
         stdout.WriteLine("  parse      <file>   Output raw segment tree as JSON");
         stdout.WriteLine("  interpret  <file>   Output interpreted node tree as JSON (Phase 5 schema)");
         stdout.WriteLine("  validate   <file>   Output validation results as JSON");
+        stdout.WriteLine("  export     <file>   Export 835 as CSV to stdout");
         stdout.WriteLine("  view       <file>   Launch the WPF viewer with the file pre-loaded");
         return 0;
     }

@@ -11,6 +11,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Open…"       Click="Open_Click"   InputGestureText="Ctrl+O"/>
                 <MenuItem Header="_Export JSON…" Command="{x:Static local:MainWindow.ExportCommand}"/>
+                <MenuItem x:Name="ExportCsvMenuItem" Header="Export _CSV…" Click="ExportCsv_Click" InputGestureText="Ctrl+Shift+E" IsEnabled="False"/>
             </MenuItem>
         </Menu>
 
