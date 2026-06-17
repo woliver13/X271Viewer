@@ -24,4 +24,28 @@ public class X835ValidatorTests
         var result = new X835Validator().Validate(doc);
         Assert.Contains(result, r => r.Contains("BPR"));
     }
+
+    [Fact]
+    public void Validate_InvalidCasGroupCode_ReturnsError()
+    {
+        var doc = new X835Document
+        {
+            HasBpr = true,
+            Claims =
+            [
+                new X835Claim
+                {
+                    ServiceLines =
+                    [
+                        new X835ServiceLine
+                        {
+                            Adjustments = [ new X835Adjustment { GroupCode = "XX" } ]
+                        }
+                    ]
+                }
+            ]
+        };
+        var result = new X835Validator().Validate(doc);
+        Assert.Contains(result, r => r.Contains("group code") || r.Contains("CAS"));
+    }
 }
