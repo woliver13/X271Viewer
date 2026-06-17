@@ -22,9 +22,11 @@ public partial class MainWindow : Window
     private X271Node?             _currentRoot             = null;
     private X271ValidationResult? _currentValidationResult = null;
     private string                _currentIsaRawText       = string.Empty;
-    private bool                  _searchPlaceholderActive = true;
-    private bool                  _is835Loaded             = false;
-    private string?               _current835FilePath      = null;
+    private bool                  _searchPlaceholderActive  = true;
+    private bool                  _is835Loaded              = false;
+    private string?               _current835FilePath       = null;
+    private string                _835ValidationText        = string.Empty;
+    private Brush                 _835ValidationBrush       = Brushes.DarkGreen;
 
     public MainWindow()
     {
@@ -90,8 +92,9 @@ public partial class MainWindow : Window
 
     private void Open835File(string content)
     {
-        var doc  = new X835DocumentParser().ParseContent(content);
-        var root = X835TreeBuilder.Build(doc);
+        var doc    = new X835DocumentParser().ParseContent(content);
+        var root   = X835TreeBuilder.Build(doc);
+        var issues = new X835Validator().Validate(doc);
 
         _currentRoot             = root;
         _currentValidationResult = null;
@@ -100,11 +103,23 @@ public partial class MainWindow : Window
         UpdateExportMenuState();
 
         PopulateTree(root);
-        RawSegmentPane.Text = doc.IsaRawText;
+        RawSegmentPane.Text = content;
 
-        InterpretationPane.Text      = "Select a claim node to view details.";
-        InterpretationPane.FontStyle  = FontStyles.Italic;
-        InterpretationPane.Foreground = Brushes.Gray;
+        if (issues.Count == 0)
+        {
+            _835ValidationText  = "✓ No validation issues.";
+            _835ValidationBrush = Brushes.DarkGreen;
+        }
+        else
+        {
+            _835ValidationText  = $"Validation issues:{Environment.NewLine}" +
+                string.Join(Environment.NewLine, issues.Select(i => $"• {i}"));
+            _835ValidationBrush = Brushes.DarkRed;
+        }
+
+        InterpretationPane.Text      = _835ValidationText;
+        InterpretationPane.FontStyle  = FontStyles.Normal;
+        InterpretationPane.Foreground = _835ValidationBrush;
     }
 
     private void UpdateExportMenuState()
@@ -335,12 +350,12 @@ public partial class MainWindow : Window
 
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
 
-        // 835 nodes carry no raw segments — show the node label as a summary
-        if (node.RawSegments.Count == 0 && _currentValidationResult is null)
+        // 835 nodes carry no raw segments — restore the validation summary
+        if (node.RawSegments.Count == 0 && _is835Loaded)
         {
-            InterpretationPane.Text      = node.Label;
+            InterpretationPane.Text      = _835ValidationText;
             InterpretationPane.FontStyle  = FontStyles.Normal;
-            InterpretationPane.Foreground = Brushes.Black;
+            InterpretationPane.Foreground = _835ValidationBrush;
             return;
         }
 
