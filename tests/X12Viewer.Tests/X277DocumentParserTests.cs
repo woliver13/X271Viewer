@@ -13,7 +13,7 @@ public class X277DocumentParserTests
     public void ParseFile_ReturnsCorrectClaimCount()
     {
         var doc = _parser.ParseFile(FixturePath("tests277.edi"));
-        Assert.Equal(2, doc.Claims.Count);
+        Assert.Equal(4, doc.Claims.Count);
     }
 
     [Fact]
