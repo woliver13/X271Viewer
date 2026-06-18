@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private string                _currentIsaRawText       = string.Empty;
     private bool                  _searchPlaceholderActive  = true;
     private bool                  _is835Loaded              = false;
+    private bool                  _is270Loaded              = false;
     private string?               _current835FilePath       = null;
     private string                _835ValidationText        = string.Empty;
     private Brush                 _835ValidationBrush       = Brushes.DarkGreen;
@@ -135,6 +136,7 @@ public partial class MainWindow : Window
     private void Open277File(string content)
     {
         _is835Loaded = false;
+        _is270Loaded = false;
         UpdateExportMenuState();
 
         var doc277      = new X277DocumentParser().ParseContent(content);
@@ -161,6 +163,7 @@ public partial class MainWindow : Window
     private void Open270File(string content)
     {
         _is835Loaded = false;
+        _is270Loaded = true;
         UpdateExportMenuState();
 
         var raw  = new X270DocumentParser().ParseContent(content);
@@ -181,6 +184,7 @@ public partial class MainWindow : Window
     private void Open271File(string content)
     {
         _is835Loaded = false;
+        _is270Loaded = false;
         UpdateExportMenuState();
         var doc    = _parser.ParseContent(content);
         var root   = X271TreeBuilder.Build(doc);
@@ -401,7 +405,16 @@ public partial class MainWindow : Window
 
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
 
-        // 835 nodes carry no raw segments — restore the validation summary
+        // 270/835 nodes carry no raw segments — restore the full content and show node summary
+        if (node.RawSegments.Count == 0 && _is270Loaded)
+        {
+            RawSegmentPane.Text          = _currentIsaRawText;
+            InterpretationPane.Text      = node.Label;
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.Black;
+            return;
+        }
+
         if (node.RawSegments.Count == 0 && _is835Loaded)
         {
             InterpretationPane.Text      = _835ValidationText;
