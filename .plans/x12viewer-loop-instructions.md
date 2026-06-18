@@ -15,18 +15,18 @@ You are driving the X12Viewer Suite implementation. On every iteration, read `.p
 
 ## 1. Ensure the feature branch exists
 
-If `feature/x12viewer-suite` does not exist locally or remotely:
+If `feature/270-837-999` does not exist locally or remotely:
 ```
 git checkout develop
 git pull origin develop
-git checkout -b feature/x12viewer-suite
-git push -u origin feature/x12viewer-suite
+git checkout -b feature/270-837-999
+git push -u origin feature/270-837-999
 ```
-Otherwise `git checkout feature/x12viewer-suite && git pull origin feature/x12viewer-suite`.
+Otherwise `git checkout feature/270-837-999 && git pull origin feature/270-837-999`.
 
 ## 2. Select the next phase
 
-Read the phases in order: 1, 2, 3, 4, 5, 6, 7.
+Read the phases in order: 8, 9, 10, 11.
 
 Pick the first phase where ALL of the following are true:
 - `status` is `"pending"` or `"in_progress"`
@@ -48,15 +48,15 @@ gh pr view <pr_number> --json state -q .state
   > **HITL required for Phase N — <slug>**
   > PR #<number> is open at <url>. Please:
   > 1. Run the WPF app and verify the HITL criteria listed in the PR description.
-  > 2. If all pass, approve and merge the PR into `feature/x12viewer-suite`.
+  > 2. If all pass, approve and merge the PR into `feature/270-837-999`.
   > 3. Restart the loop with `/loop <this prompt>`.
 
 ## 4. Start or resume the phase branch
 
 If the phase `branch` is null:
 ```
-git checkout feature/x12viewer-suite
-git pull origin feature/x12viewer-suite
+git checkout feature/270-837-999
+git pull origin feature/270-837-999
 git checkout -b phase/<N>-<slug>
 git push -u origin phase/<N>-<slug>
 ```
@@ -72,7 +72,7 @@ Set `current_branch` in state.
 
 ## 5. Identify the next criterion to implement
 
-Open `.plans/X12Viewer_Plan1.md` and find the acceptance criteria for the current phase. Cross-reference `phases.<N>.completed_criteria` in state.
+Open `.plans/X12Viewer_Plan2.md` and find the acceptance criteria for the current phase. Cross-reference `phases.<N>.completed_criteria` in state.
 
 Pick the **first AFK criterion not yet in `completed_criteria`**. Skip any criterion marked HITL — those are verified by the human, not implemented by the loop.
 
@@ -101,11 +101,11 @@ Loop back to step 5.
 
 ## 7. Phase AFK complete — open the PR
 
-All AFK criteria are done. Open a PR from `phase/<N>-<slug>` into `feature/x12viewer-suite`:
+All AFK criteria are done. Open a PR from `phase/<N>-<slug>` into `feature/270-837-999`:
 
 ```
 gh pr create \
-  --base feature/x12viewer-suite \
+  --base feature/270-837-999 \
   --title "Phase <N>: <slug>" \
   --body "Closes #<issue>\n\n## AFK criteria\nAll passing — see commit history.\n\n## HITL criteria\n<list hitl_criteria or 'None'>"
 ```
@@ -126,6 +126,6 @@ Set phase `status = "in_progress"` (waiting for human). Write state. STOP with t
 Always end a STOP with one of these banners so the user knows what happened:
 
 - `[STOPPED: time_limit]` — rerun `/loop <prompt>` to continue
-- `[STOPPED: iteration_budget]` — rerun `/loop <prompt>` to continue  
+- `[STOPPED: iteration_budget]` — rerun `/loop <prompt>` to continue
 - `[STOPPED: hitl_pending phase <N>]` — verify HITL, merge PR #<number>, then rerun
 - `[STOPPED: all_phases_complete]` — feature branch ready; open PR into develop
