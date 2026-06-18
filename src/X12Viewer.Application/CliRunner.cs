@@ -55,6 +55,21 @@ public static class CliRunner
             }
         }
 
+        if (st01 == "270")
+        {
+            try
+            {
+                var doc270 = new X270DocumentParser().ParseContent(content);
+                stdout.Write(JsonSerializer.Serialize(doc270, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
         if (st01 is "277" or "276")
         {
             try
@@ -93,6 +108,22 @@ public static class CliRunner
                 var doc835 = new X835DocumentParser().ParseContent(content);
                 var enriched = X835Interpreter.Interpret(doc835);
                 stdout.Write(JsonSerializer.Serialize(enriched, JsonCamelOptions));
+                return 0;
+            }
+            catch (X271ParseException ex)
+            {
+                stderr.WriteLine($"Error: {ex.Message}");
+                return 2;
+            }
+        }
+
+        if (st01i == "270")
+        {
+            try
+            {
+                var doc270 = new X270DocumentParser().ParseContent(content);
+                var enriched270 = X270Interpreter.Interpret(doc270);
+                stdout.Write(JsonSerializer.Serialize(enriched270, JsonCamelOptions));
                 return 0;
             }
             catch (X271ParseException ex)

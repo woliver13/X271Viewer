@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private string                _currentIsaRawText       = string.Empty;
     private bool                  _searchPlaceholderActive  = true;
     private bool                  _is835Loaded              = false;
+    private bool                  _is270Loaded              = false;
     private string?               _current835FilePath       = null;
     private string                _835ValidationText        = string.Empty;
     private Brush                 _835ValidationBrush       = Brushes.DarkGreen;
@@ -43,7 +44,7 @@ public partial class MainWindow : Window
     {
         var dlg = new OpenFileDialog
         {
-            Title = "Open X12 File (271 or 835)",
+            Title = "Open X12 EDI File",
             Filter = "EDI files (*.edi;*.txt;*.x12)|*.edi;*.txt;*.x12|All files (*.*)|*.*",
             FilterIndex = 1
         };
@@ -65,6 +66,11 @@ public partial class MainWindow : Window
             {
                 _current835FilePath = path;
                 Open835File(content);
+            }
+            else if (st01 == "270")
+            {
+                _current835FilePath = null;
+                Open270File(content);
             }
             else if (st01 is "277" or "276")
             {
@@ -108,7 +114,7 @@ public partial class MainWindow : Window
         UpdateExportMenuState();
 
         PopulateTree(root);
-        RawSegmentPane.Text = content;
+        RawSegmentPane.Text = FormatEdiForDisplay(content);
 
         if (issues.Count == 0)
         {
@@ -130,6 +136,7 @@ public partial class MainWindow : Window
     private void Open277File(string content)
     {
         _is835Loaded = false;
+        _is270Loaded = false;
         UpdateExportMenuState();
 
         var doc277      = new X277DocumentParser().ParseContent(content);
@@ -141,7 +148,7 @@ public partial class MainWindow : Window
         _currentIsaRawText       = content;
 
         PopulateTree(root);
-        RawSegmentPane.Text = content;
+        RawSegmentPane.Text = FormatEdiForDisplay(content);
 
         InterpretationPane.Text      = "✓ Claim status loaded.";
         InterpretationPane.FontStyle  = FontStyles.Normal;
@@ -153,9 +160,31 @@ public partial class MainWindow : Window
         ExportCsvMenuItem.IsEnabled = _is835Loaded;
     }
 
+    private void Open270File(string content)
+    {
+        _is835Loaded = false;
+        _is270Loaded = true;
+        UpdateExportMenuState();
+
+        var raw  = new X270DocumentParser().ParseContent(content);
+        var doc  = X270Interpreter.Interpret(raw);
+        var root = X270TreeBuilder.Build(doc);
+
+        _currentRoot             = root;
+        _currentValidationResult = null;
+        _currentIsaRawText       = content;
+
+        PopulateTree(root);
+        RawSegmentPane.Text          = FormatEdiForDisplay(content);
+        InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
+        InterpretationPane.FontStyle  = FontStyles.Italic;
+        InterpretationPane.Foreground = Brushes.Gray;
+    }
+
     private void Open271File(string content)
     {
         _is835Loaded = false;
+        _is270Loaded = false;
         UpdateExportMenuState();
         var doc    = _parser.ParseContent(content);
         var root   = X271TreeBuilder.Build(doc);
@@ -168,7 +197,7 @@ public partial class MainWindow : Window
         _currentIsaRawText       = doc.IsaRawText;
 
         PopulateTree(root);
-        RawSegmentPane.Text = doc.IsaRawText;
+        RawSegmentPane.Text = FormatEdiForDisplay(doc.IsaRawText);
 
         if (validationResult.IsValid)
         {
@@ -376,7 +405,16 @@ public partial class MainWindow : Window
 
         RawSegmentPane.Text = string.Join(Environment.NewLine, node.RawSegments);
 
-        // 835 nodes carry no raw segments — restore the validation summary
+        // 270/835 nodes carry no raw segments — restore the full content and show node summary
+        if (node.RawSegments.Count == 0 && _is270Loaded)
+        {
+            RawSegmentPane.Text          = FormatEdiForDisplay(_currentIsaRawText);
+            InterpretationPane.Text      = node.Label;
+            InterpretationPane.FontStyle  = FontStyles.Normal;
+            InterpretationPane.Foreground = Brushes.Black;
+            return;
+        }
+
         if (node.RawSegments.Count == 0 && _is835Loaded)
         {
             InterpretationPane.Text      = _835ValidationText;
@@ -400,4 +438,7 @@ public partial class MainWindow : Window
             InterpretationPane.Foreground = Brushes.Black;
         }
     }
+
+    private static string FormatEdiForDisplay(string content)
+        => content.Replace("~", "~" + Environment.NewLine).TrimEnd();
 }

@@ -1,18 +1,18 @@
 {
   "feature_branch": "feature/270-837-999",
-  "current_phase": null,
-  "current_branch": null,
+  "current_phase": 8,
+  "current_branch": "phase/8-270-eligibility-inquiry",
   "current_pr": null,
-  "session_started_at": null,
-  "iteration_count": 0,
+  "session_started_at": "2026-06-17T00:00:00Z",
+  "iteration_count": 1,
   "max_iterations_per_session": 10,
   "phases": {
     "8": {
-      "status": "pending",
+      "status": "in_progress",
       "depends_on": [],
       "slug": "270-eligibility-inquiry",
       "issue": 43,
-      "branch": null,
+      "branch": "phase/8-270-eligibility-inquiry",
       "pr": null,
       "has_hitl": true,
       "hitl_criteria": [
@@ -20,7 +20,23 @@
         "Dependent node is visible when dependent present in fixture",
         "WPF file open dialog label reads 'Open X12 EDI File'"
       ],
-      "completed_criteria": []
+      "completed_criteria": [
+        "X270DocumentParser.ParseFile returns the correct subscriber count from the fixture",
+        "Each X270Subscriber exposes SubscriberId and SubscriberName",
+        "Dependent loop populates X270Dependent with PatientName when present",
+        "Each X270ServiceTypeQuery exposes the raw EQ service type code",
+        "X270Interpreter.Interpret resolves EQ service type code 30 to a non-empty plain-English description",
+        "Unknown EQ code falls back to '{code} (unrecognized code)'",
+        "X270Validator.Validate returns zero errors for a well-formed fixture",
+        "Missing subscriber loop produces a validation error",
+        "No EQ segments produces a validation error",
+        "X270TreeBuilder.Build produces subscriber nodes as children of root",
+        "Dependent node appears as child of subscriber node when dependent is present",
+        "EQ service type nodes appear with plain-English description labels",
+        "CLI parse auto-detects ST01=270 and routes to X270DocumentParser",
+        "CLI interpret on a 270 fixture emits JSON with plain-English service type descriptions",
+        "Existing 271, 835, and 277 CLI tests pass unchanged"
+      ]
     },
     "9": {
       "status": "pending",
