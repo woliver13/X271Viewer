@@ -43,7 +43,7 @@ public partial class MainWindow : Window
     {
         var dlg = new OpenFileDialog
         {
-            Title = "Open X12 File (271 or 835)",
+            Title = "Open X12 EDI File",
             Filter = "EDI files (*.edi;*.txt;*.x12)|*.edi;*.txt;*.x12|All files (*.*)|*.*",
             FilterIndex = 1
         };
@@ -65,6 +65,11 @@ public partial class MainWindow : Window
             {
                 _current835FilePath = path;
                 Open835File(content);
+            }
+            else if (st01 == "270")
+            {
+                _current835FilePath = null;
+                Open270File(content);
             }
             else if (st01 is "277" or "276")
             {
@@ -151,6 +156,26 @@ public partial class MainWindow : Window
     private void UpdateExportMenuState()
     {
         ExportCsvMenuItem.IsEnabled = _is835Loaded;
+    }
+
+    private void Open270File(string content)
+    {
+        _is835Loaded = false;
+        UpdateExportMenuState();
+
+        var raw  = new X270DocumentParser().ParseContent(content);
+        var doc  = X270Interpreter.Interpret(raw);
+        var root = X270TreeBuilder.Build(doc);
+
+        _currentRoot             = root;
+        _currentValidationResult = null;
+        _currentIsaRawText       = "";
+
+        PopulateTree(root);
+        RawSegmentPane.Text          = content[..Math.Min(500, content.Length)];
+        InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
+        InterpretationPane.FontStyle  = FontStyles.Italic;
+        InterpretationPane.Foreground = Brushes.Gray;
     }
 
     private void Open271File(string content)
