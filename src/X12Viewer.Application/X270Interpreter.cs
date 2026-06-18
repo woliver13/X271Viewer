@@ -24,5 +24,5 @@ public static class X270Interpreter
     }
 
     private static X270ServiceTypeQuery EnrichEq(X270ServiceTypeQuery eq)
-        => eq with { Description = X12CodeTable.Resolve("EB01", eq.ServiceTypeCode) };
+        => eq with { Description = X12CodeTable.Resolve("EQ01", eq.ServiceTypeCode) };
 }
