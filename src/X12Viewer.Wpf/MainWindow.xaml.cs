@@ -114,7 +114,7 @@ public partial class MainWindow : Window
         UpdateExportMenuState();
 
         PopulateTree(root);
-        RawSegmentPane.Text = content;
+        RawSegmentPane.Text = FormatEdiForDisplay(content);
 
         if (issues.Count == 0)
         {
@@ -148,7 +148,7 @@ public partial class MainWindow : Window
         _currentIsaRawText       = content;
 
         PopulateTree(root);
-        RawSegmentPane.Text = content;
+        RawSegmentPane.Text = FormatEdiForDisplay(content);
 
         InterpretationPane.Text      = "✓ Claim status loaded.";
         InterpretationPane.FontStyle  = FontStyles.Normal;
@@ -197,7 +197,7 @@ public partial class MainWindow : Window
         _currentIsaRawText       = doc.IsaRawText;
 
         PopulateTree(root);
-        RawSegmentPane.Text = doc.IsaRawText;
+        RawSegmentPane.Text = FormatEdiForDisplay(doc.IsaRawText);
 
         if (validationResult.IsValid)
         {
@@ -408,7 +408,7 @@ public partial class MainWindow : Window
         // 270/835 nodes carry no raw segments — restore the full content and show node summary
         if (node.RawSegments.Count == 0 && _is270Loaded)
         {
-            RawSegmentPane.Text          = _currentIsaRawText;
+            RawSegmentPane.Text          = FormatEdiForDisplay(_currentIsaRawText);
             InterpretationPane.Text      = node.Label;
             InterpretationPane.FontStyle  = FontStyles.Normal;
             InterpretationPane.Foreground = Brushes.Black;
@@ -438,4 +438,7 @@ public partial class MainWindow : Window
             InterpretationPane.Foreground = Brushes.Black;
         }
     }
+
+    private static string FormatEdiForDisplay(string content)
+        => content.Replace("~", "~" + Environment.NewLine).TrimEnd();
 }
