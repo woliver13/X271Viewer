@@ -175,7 +175,7 @@ public partial class MainWindow : Window
         _currentIsaRawText       = content;
 
         PopulateTree(root);
-        RawSegmentPane.Text          = content;
+        RawSegmentPane.Text          = FormatEdiForDisplay(content);
         InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
         InterpretationPane.FontStyle  = FontStyles.Italic;
         InterpretationPane.Foreground = Brushes.Gray;
