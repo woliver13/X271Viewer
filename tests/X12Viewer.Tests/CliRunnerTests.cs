@@ -229,4 +229,36 @@ public class CliRunnerTests
         Assert.Empty(stderr);
         Assert.Contains("statusDescription", stdout, StringComparison.OrdinalIgnoreCase);
     }
+
+    // ── Phase 8: 270 routing ─────────────────────────────────────────────────
+
+    [Fact]
+    public void CliRunner_parse_routes_270_to_X270DocumentParser()
+    {
+        var (exit, stdout, stderr) = Exec("parse", FixturePath("tests270.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+
+        using var doc = JsonDocument.Parse(stdout);
+        var root = doc.RootElement;
+        Assert.True(root.TryGetProperty("subscribers", out var subs));
+        Assert.Equal(JsonValueKind.Array, subs.ValueKind);
+        Assert.Equal(2, subs.GetArrayLength());
+    }
+
+    [Fact]
+    public void CliRunner_interpret_270_emits_plain_English_service_type_descriptions()
+    {
+        var (exit, stdout, stderr) = Exec("interpret", FixturePath("tests270.edi"));
+
+        Assert.Equal(0, exit);
+        Assert.Empty(stderr);
+
+        using var doc = JsonDocument.Parse(stdout);
+        var sub0 = doc.RootElement.GetProperty("subscribers")[0];
+        var eq0 = sub0.GetProperty("serviceTypeQueries")[0];
+        Assert.True(eq0.TryGetProperty("description", out var desc));
+        Assert.False(string.IsNullOrEmpty(desc.GetString()));
+    }
 }
