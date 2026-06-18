@@ -169,10 +169,10 @@ public partial class MainWindow : Window
 
         _currentRoot             = root;
         _currentValidationResult = null;
-        _currentIsaRawText       = "";
+        _currentIsaRawText       = content;
 
         PopulateTree(root);
-        RawSegmentPane.Text          = content[..Math.Min(500, content.Length)];
+        RawSegmentPane.Text          = content;
         InterpretationPane.Text      = "Select a node to see its plain-English interpretation.";
         InterpretationPane.FontStyle  = FontStyles.Italic;
         InterpretationPane.Foreground = Brushes.Gray;
