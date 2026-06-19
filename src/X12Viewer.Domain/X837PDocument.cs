@@ -17,14 +17,15 @@ public sealed class X837Patient
     public string PatientName { get; init; } = "";
 }
 
-public sealed record X837DiagnosisCode(string Code);
+public sealed record X837DiagnosisCode(string Code, string? Description = null);
 
 public sealed class X837PServiceLine
 {
-    public string  ProcedureCode { get; init; } = "";
-    public string  Modifier      { get; init; } = "";
-    public decimal Units         { get; init; }
-    public decimal BilledAmount  { get; init; }
+    public string  ProcedureCode        { get; init; } = "";
+    public string  Modifier             { get; init; } = "";
+    public decimal Units                { get; init; }
+    public decimal BilledAmount         { get; init; }
+    public string? ProcedureDescription { get; init; }
 }
 
 public sealed class X837Claim
