@@ -95,6 +95,7 @@ public sealed class X837PDocumentParser
                         ClaimId        = SafeGet(seg, 1),
                         BilledAmount   = ParseDecimal(SafeGet(seg, 2)),
                         PlaceOfService = pos,
+                        Subscriber     = subscriber,
                         Patient        = patient,
                     };
                     break;
@@ -134,8 +135,6 @@ public sealed class X837PDocumentParser
         return new X837PDocument
         {
             BillingProvider = billingProvider,
-            Subscriber      = subscriber,
-            Patient         = patient,
             Claims          = claims,
         };
     }

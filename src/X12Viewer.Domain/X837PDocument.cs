@@ -32,15 +32,14 @@ public sealed class X837Claim
     public string                  ClaimId        { get; init; } = "";
     public string                  PlaceOfService { get; init; } = "";
     public decimal                 BilledAmount   { get; init; }
+    public X837Subscriber          Subscriber     { get; init; } = new();
+    public X837Patient?            Patient        { get; init; }
     public List<X837DiagnosisCode> DiagnosisCodes { get; init; } = new();
     public List<X837PServiceLine>  ServiceLines   { get; init; } = new();
-    public X837Patient?            Patient        { get; init; }
 }
 
 public sealed class X837PDocument
 {
     public X837BillingProvider BillingProvider { get; init; } = new();
-    public X837Subscriber      Subscriber      { get; init; } = new();
-    public X837Patient?        Patient         { get; init; }
     public List<X837Claim>     Claims          { get; init; } = new();
 }
