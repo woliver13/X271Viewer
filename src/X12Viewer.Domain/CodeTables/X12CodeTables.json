@@ -896,5 +896,37 @@
     "MH": "Mental Health",
     "OA": "Osteopathic Services",
     "UC": "Urgent Care"
+  },
+  "ICD10CM": {
+    "A00.0": "Cholera due to Vibrio cholerae 01, biovar cholerae",
+    "A00.1": "Cholera due to Vibrio cholerae 01, biovar eltor",
+    "B20": "Human immunodeficiency virus [HIV] disease",
+    "E11.9": "Type 2 diabetes mellitus without complications",
+    "F32.9": "Major depressive disorder, single episode, unspecified",
+    "I10": "Essential (primary) hypertension",
+    "I25.10": "Atherosclerotic heart disease of native coronary artery without angina pectoris",
+    "J06.9": "Acute upper respiratory infection, unspecified",
+    "J18.9": "Unspecified pneumonia",
+    "J44.1": "Chronic obstructive pulmonary disease with acute exacerbation",
+    "K21.0": "Gastro-esophageal reflux disease with esophagitis",
+    "M54.5": "Low back pain",
+    "N18.3": "Chronic kidney disease, stage 3 (moderate)",
+    "Z00.00": "Encounter for general adult medical examination without abnormal findings",
+    "Z00.01": "Encounter for general adult medical examination with abnormal findings",
+    "Z23": "Encounter for immunization"
+  },
+  "HCPCS": {
+    "G0008": "Administration of influenza virus vaccine",
+    "G0009": "Administration of pneumococcal vaccine",
+    "G0010": "Administration of hepatitis B vaccine",
+    "G0101": "Cervical or vaginal cancer screening; pelvic and clinical breast examination",
+    "G0102": "Prostate cancer screening; digital rectal examination",
+    "G0246": "Follow-up office visit for patient with a colostomy",
+    "J0129": "Injection, abatacept, 10 mg",
+    "J0171": "Injection, adrenalin, epinephrine, 0.1 mg",
+    "J0256": "Injection, alpha 1-proteinase inhibitor (human), 10 mg",
+    "J3301": "Injection, triamcinolone acetonide, not otherwise specified, 10 mg",
+    "Q0136": "Injection, ferumoxytol, 1 mg (for non-ESRD use)",
+    "Q4100": "Skin substitute, not otherwise specified"
   }
 }

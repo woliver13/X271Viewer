@@ -55,6 +55,26 @@ public static class CliRunner
             }
         }
 
+        if (st01 == "837")
+        {
+            var gs    = doc.Segments.FirstOrDefault(s => s.SegmentId == "GS");
+            var gs08  = gs?.Elements.Count >= 8 ? gs.Elements[7] : "";
+            if (gs08.Contains("X222", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var doc837p = new X837PDocumentParser().ParseContent(content);
+                    stdout.Write(JsonSerializer.Serialize(doc837p, JsonCamelOptions));
+                    return 0;
+                }
+                catch (X271ParseException ex)
+                {
+                    stderr.WriteLine($"Error: {ex.Message}");
+                    return 2;
+                }
+            }
+        }
+
         if (st01 == "270")
         {
             try
@@ -114,6 +134,27 @@ public static class CliRunner
             {
                 stderr.WriteLine($"Error: {ex.Message}");
                 return 2;
+            }
+        }
+
+        if (st01i == "837")
+        {
+            var gs837  = doc.Segments.FirstOrDefault(s => s.SegmentId == "GS");
+            var gs08i  = gs837?.Elements.Count >= 8 ? gs837.Elements[7] : "";
+            if (gs08i.Contains("X222", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var doc837p     = new X837PDocumentParser().ParseContent(content);
+                    var enriched837 = X837PInterpreter.Interpret(doc837p);
+                    stdout.Write(JsonSerializer.Serialize(enriched837, JsonCamelOptions));
+                    return 0;
+                }
+                catch (X271ParseException ex)
+                {
+                    stderr.WriteLine($"Error: {ex.Message}");
+                    return 2;
+                }
             }
         }
 
@@ -206,8 +247,10 @@ public static class CliRunner
         var doc = ParseDoc(content, stderr);
         if (doc is null) return 2;
 
-        var st = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
-        if (st is not null && st.Elements.Count > 0 && st.Elements[0] == "835")
+        var stExp = doc.Segments.FirstOrDefault(s => s.SegmentId == "ST");
+        var st01e = stExp?.Elements.Count > 0 ? stExp.Elements[0] : "";
+
+        if (st01e == "835")
         {
             try
             {
@@ -223,7 +266,28 @@ public static class CliRunner
             }
         }
 
-        stderr.WriteLine("Error: export is only supported for 835 files");
+        if (st01e == "837")
+        {
+            var gs837e = doc.Segments.FirstOrDefault(s => s.SegmentId == "GS");
+            var gs08e  = gs837e?.Elements.Count >= 8 ? gs837e.Elements[7] : "";
+            if (gs08e.Contains("X222", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var doc837p = new X837PDocumentParser().ParseContent(content);
+                    var csv = X837PCsvExporter.Export(doc837p);
+                    stdout.Write(csv);
+                    return 0;
+                }
+                catch (X271ParseException ex)
+                {
+                    stderr.WriteLine($"Error: {ex.Message}");
+                    return 2;
+                }
+            }
+        }
+
+        stderr.WriteLine("Error: export is only supported for 835 and 837P files");
         return 1;
     }
 
